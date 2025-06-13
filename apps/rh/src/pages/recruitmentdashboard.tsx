@@ -11,8 +11,8 @@ import Link from 'next/link';
 import Head from 'next/head';
 // Importe aqui os ícones e componentes necessários, ou substitua por placeholders se não existirem
 // import { Search, UserPlus, UserX, RefreshCw, BarChart2, Briefcase } from "lucide-react";
-// import { Input } from "@/components/ui/input";
-// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+// import { Input } from "@RFWebApp/ui/input";
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@RFWebApp/ui/tabs";
 // import { employees, processStats, recentProcesses, searchEmployees } from "@/lib/mock-data";
 // import DashboardContent from "./dashboard-content";
 // import RecruitmentForm from "./recruitment-form";

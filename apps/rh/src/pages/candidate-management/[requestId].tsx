@@ -5,9 +5,9 @@ import { useRouter } from "next/router";
 import { useMsal } from "@azure/msal-react";
 import gsap from "gsap";
 import { ArrowLeft, Briefcase, Users, Building2, FileText, CalendarDays, Info, ChevronDown, ChevronRight, PlusCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@RFWebApp/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@RFWebApp/ui/card";
+import { Badge } from "@RFWebApp/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -17,13 +17,13 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogClose,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+} from "@RFWebApp/ui/dialog";
+import { Input } from "@RFWebApp/ui/input";
+import { Textarea } from "@RFWebApp/ui/textarea";
+import { Label } from "@RFWebApp/ui/label";
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
-import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@RFWebApp/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@RFWebApp/ui/select";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,7 +31,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from "@RFWebApp/ui/alert-dialog";
 
 // Interface for the recruitment request (similar to dashboard)
 interface Pedido {
