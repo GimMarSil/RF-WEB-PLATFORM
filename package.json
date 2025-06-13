@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "tailwindcss": "^4.1.10"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1"
+  }
+}

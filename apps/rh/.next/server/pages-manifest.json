@@ -1,0 +1,12 @@
+{
+  "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
+  "/_document": "pages/_document.js",
+  "/landing": "pages/landing.js",
+  "/evaluation/evaluate": "pages/evaluation/evaluate.js",
+  "/evaluation/evaluate/[subordinateId]": "pages/evaluation/evaluate/[subordinateId].js",
+  "/evaluation/matrices": "pages/evaluation/matrices.js",
+  "/evaluation": "pages/evaluation.js",
+  "/api/evaluation-matrices": "pages/api/evaluation-matrices.js",
+  "/api/evaluation/user-role-info": "pages/api/evaluation/user-role-info.js"
+}
