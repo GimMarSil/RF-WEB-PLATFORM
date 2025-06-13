@@ -9,13 +9,18 @@ Monorepo da plataforma Ramos Ferreira, com micro-serviços React/Next.js e uma U
 rf-web-platform/
 ├── apps/
 │   ├── autos/               # Microserviço de autos de medição
-│   └── ...                  # Futuras apps (ex: dashboard, auth, etc.)
+│   ├── core/                # Autenticação MSAL e seleção de funcionário
+│   └── rh/                  # Microserviço RH protegido
 ├── packages/
 │   └── ui/                  # Biblioteca @RFWebApp/ui com Tailwind + GSAP
+├── lib/                     # Código partilhado (MSAL, store, API)
 ├── pnpm-workspace.yaml      # Declaração dos workspaces
 ├── tsconfig.base.json       # Configuração TypeScript comum
 ├── package.json             # Raiz do monorepo (apenas metainformação)
 ```
+### Login e seleção de funcionário
+O app **core** usa MSAL para autenticar e obter os funcionários do utilizador. O funcionário ativo fica guardado em **localStorage** e no cookie `employeeNumber`, acessível via o hook `useFuncionarioAtivo()`.
+
 
 ---
 
@@ -50,6 +55,7 @@ pnpm install
 ## 🎨 UI Partilhada: `@RFWebApp/ui`
 
 Biblioteca central de componentes estilizados com Tailwind CSS, GSAP e design Ramos Ferreira.
+> Inclui cartões animados (`AppCard`) para ligar cada microserviço no dashboard /apps.
 
 ### Como usar na tua app:
 

@@ -13,3 +13,4 @@ export * from './components/switch';
 export * from './components/table';
 export * from './components/tabs';
 export * from './components/textarea';
+export * from './components/app-card';
