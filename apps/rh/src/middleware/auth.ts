@@ -98,9 +98,12 @@ async function getGraphApiToken(): Promise<string> {
     }
 
     // Cache the token
+    const expiresAt = result.expiresOn
+      ? new Date(result.expiresOn).getTime()
+      : Date.now() + 3600 * 1000;
     graphTokenCache = {
       token: result.accessToken,
-      expiresAt: Date.now() + (result.expiresIn || 3600) * 1000,
+      expiresAt,
     };
 
     return result.accessToken;

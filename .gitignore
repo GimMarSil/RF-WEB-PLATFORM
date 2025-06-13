@@ -18,3 +18,7 @@
 .vscode/
 .idea/
 .DS_Store
+**/.next/
+package-lock.json
+packages/*/package-lock.json
+apps/*/package-lock.json
