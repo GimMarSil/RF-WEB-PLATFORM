@@ -4,16 +4,16 @@ import { useState, useEffect, useRef } from "react"
 import { useMsal, useIsAuthenticated } from "@azure/msal-react" // Import useIsAuthenticated
 import gsap from "gsap"
 import { useRouter } from "next/router"; // Import useRouter
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Switch } from "@/components/ui/switch"
-import { Separator } from "@/components/ui/separator"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@RFWebApp/ui/tabs"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@RFWebApp/ui/card"
+import { Button } from "@RFWebApp/ui/button"
+import { Input } from "@RFWebApp/ui/input"
+import { Switch } from "@RFWebApp/ui/switch"
+import { Separator } from "@RFWebApp/ui/separator"
+import { Textarea } from "@RFWebApp/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@RFWebApp/ui/select"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@RFWebApp/ui/table"
+import { Badge } from "@RFWebApp/ui/badge"
 import {
   Users,
   Building2,
@@ -34,9 +34,9 @@ import {
   ArrowLeft, // Import ArrowLeft icon
   Power, // Import Power icon for activate/inactivate
 } from "lucide-react"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { ScrollArea } from "@RFWebApp/ui/scroll-area"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@RFWebApp/ui/accordion"
+import { Avatar, AvatarFallback, AvatarImage } from "@RFWebApp/ui/avatar"
 // import { toast } from "react-hot-toast"; // Not used in dashboard, can be removed if not used elsewhere
 
 // Função utilitária para obter as iniciais (primeira e última palavra)
