@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import {
@@ -12,19 +12,72 @@ import {
   AdjustmentsHorizontalIcon, // for Matrizes de Avaliação button
   IdentificationIcon, // for Minhas Avaliações button
 } from '@heroicons/react/24/outline';
+import { useMsal } from '@azure/msal-react';
+import { InteractionStatus, PublicClientApplication } from '@azure/msal-browser';
+import { useSelectedEmployee } from '@/contexts/SelectedEmployeeContext';
+import { fetchWithAuth, ApiClientOptions } from '@/lib/apiClient';
 
-// Placeholder data for summary cards - replace with actual data fetching later
-const summaryData = {
-  pendingReviews: 1,
-  completedReviews: 2,
-  pendingBalances: 2,
-};
+interface RoleInfo {
+  isManager: boolean;
+  subordinates: { id: string; name: string }[];
+}
+
+interface SelfEvaluation {
+  id: number;
+  matrix_title: string;
+  evaluation_period_month: string;
+  status: string;
+}
 
 const EvaluationDashboardPage = () => {
   const [activeTab, setActiveTab] = useState<'gestor' | 'colaborador'>('gestor');
+  const [roleInfo, setRoleInfo] = useState<RoleInfo | null>(null);
+  const [selfEvals, setSelfEvals] = useState<SelfEvaluation[]>([]);
+  const [summaryData, setSummaryData] = useState({
+    pendingReviews: 0,
+    completedReviews: 0,
+    pendingBalances: 0,
+  });
+  const { msalInstance, accounts, inProgress, selectedEmployeeId } = useSelectedEmployee();
+  const activeAccount = accounts && accounts.length > 0 ? accounts[0] : null;
 
-  // TODO: Fetch actual data based on user role (manager/employee) and their ID
-  // For now, using placeholder data and simple role switching.
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!msalInstance || !activeAccount || inProgress !== InteractionStatus.None || !selectedEmployeeId) {
+        return;
+      }
+
+      const apiClientOptions: ApiClientOptions = {
+        msalInstance: msalInstance as PublicClientApplication,
+        selectedEmployeeId,
+        interactionStatus: inProgress,
+        activeAccount,
+      };
+
+      try {
+        const role = await fetchWithAuth<RoleInfo>('/api/evaluation/user-role-info', { method: 'GET' }, apiClientOptions);
+        setRoleInfo(role);
+        setActiveTab(role.isManager ? 'gestor' : 'colaborador');
+
+        const selfData = await fetchWithAuth<SelfEvaluation[]>(
+          '/api/evaluation/self-evaluations?status=draft',
+          { method: 'GET' },
+          apiClientOptions
+        );
+        setSelfEvals(selfData);
+
+        setSummaryData((prev) => ({
+          ...prev,
+          pendingReviews: role.isManager ? role.subordinates.length : selfData.length,
+        }));
+      } catch (err) {
+        console.error('Failed to fetch evaluation dashboard data:', err);
+      }
+    };
+
+    fetchData();
+  }, [msalInstance, activeAccount, inProgress, selectedEmployeeId]);
+
 
   return (
     <>
@@ -131,7 +184,20 @@ const EvaluationDashboardPage = () => {
                   </a>
                 </Link>
               </div>
-              {/* TODO: Add table/list of pending evaluations for manager view here */}
+              {roleInfo && roleInfo.subordinates.length > 0 ? (
+                <ul className="mt-6 divide-y divide-gray-200">
+                  {roleInfo.subordinates.map((sub) => (
+                    <li key={sub.id} className="py-2 flex justify-between items-center">
+                      <span>{sub.name}</span>
+                      <Link href={`/evaluation/evaluate/${sub.id}`} className="text-sm text-blue-600 hover:underline">
+                        Avaliar
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-500 mt-6">Sem avaliações pendentes.</p>
+              )}
             </div>
           )}
 
@@ -139,8 +205,18 @@ const EvaluationDashboardPage = () => {
             <div>
               <h2 className="text-xl font-semibold text-gray-700 mb-1">Ações do Colaborador</h2>
               <p className="text-sm text-gray-500 mb-6">Acompanhe o seu desempenho e preencha os seus formulários.</p>
-              {/* TODO: Add content for Colaborador view */}
-              <p className="text-center text-gray-500 py-8">Conteúdo do colaborador em desenvolvimento.</p>
+              {selfEvals.length > 0 ? (
+                <ul className="divide-y divide-gray-200">
+                  {selfEvals.map((se) => (
+                    <li key={se.id} className="py-2 flex justify-between">
+                      <span>{se.matrix_title}</span>
+                      <span>{new Date(se.evaluation_period_month).toLocaleDateString()}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-center text-gray-500 py-8">Nenhuma autoavaliação pendente.</p>
+              )}
             </div>
           )}
         </div>
