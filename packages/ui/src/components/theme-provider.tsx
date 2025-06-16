@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, type FC, type ReactNode } from 'react';
 
 export type Theme = 'light' | 'dark' | 'high-contrast';
 
@@ -11,7 +11,11 @@ interface PrefContextValue {
 
 const PrefContext = createContext<PrefContextValue | undefined>(undefined);
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
+interface ThemeProviderProps {
+  children: ReactNode;
+}
+
+export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
   const [theme, setThemeState] = useState<Theme>('light');
   const [language, setLanguageState] = useState('pt');
 
