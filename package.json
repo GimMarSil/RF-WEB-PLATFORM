@@ -11,7 +11,6 @@
     "dev": "node -e \"console.log('Especifique a app: pnpm dev -F <nome>');\""
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.10",
     "@typescript-eslint/eslint-plugin": "^8.34.0",
     "@typescript-eslint/parser": "^8.34.0",
     "autoprefixer": "^10.4.17",
@@ -21,7 +20,7 @@
     "postcss": "^8.4.35",
     "prettier": "^3.5.3",
     "rimraf": "^5.0.10",
-    "tailwindcss": "^4.1.10"
+    "tailwindcss": "^3.4.1"
   },
   "dependencies": {
     "clsx": "^2.1.1",
