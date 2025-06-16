@@ -8,6 +8,12 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      window.location.href = `/api/login-callback?hash=${encodeURIComponent(hash)}`;
+      return;
+    }
+
     if (!instance.getActiveAccount()) {
       instance.loginRedirect(loginRequest);
     } else {
