@@ -84,6 +84,7 @@ pnpm dev -F core
 | pnpm build -F @RFWebApp/ui | Build do pacote de UI |
 | pnpm run dev -F @RFWebApp/ui | Dev mode do pacote UI |
 | pnpm add -F autos @RFWebApp/ui | Adiciona o pacote UI ao microserviço |
+| pnpm run tokens -F @RFWebApp/ui | Exporta cores e espaçamentos do Tailwind |
 
 🎨 UI Partilhada: @RFWebApp/ui
 Biblioteca central de componentes estilizados com Tailwind CSS, GSAP e design Ramos Ferreira.
@@ -110,6 +111,12 @@ export default {
   presets: [preset],
   content: ['./src/**/*.{js,ts,jsx,tsx}']
 };
+```
+
+Para exportar as cores e espaçamentos configurados, execute:
+
+```bash
+pnpm run tokens -F @RFWebApp/ui
 ```
 
 🌗 Sistema de temas
