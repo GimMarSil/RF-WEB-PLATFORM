@@ -9,7 +9,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!instance.getActiveAccount()) {
-      instance.loginRedirect(loginRequest);
+      instance.loginRedirect({ ...loginRequest, redirectUri: '/api/login-callback' });
     } else {
       router.replace('/apps');
     }
