@@ -1,24 +1,22 @@
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { useAuthStore } from './useAuthStore';
-
-export function useRequireAuth(redirect = true) {
-  const { employeeNumber, setEmployeeNumber } = useAuthStore();
+import { useIsAuthenticated } from '@azure/msal-react';
+import { useAuthStore } from '../src/store/auth';
+export function useRequireAuth() {
+  const isAuthenticated = useIsAuthenticated();
+  const { employeeNumber } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
-    if (!employeeNumber) {
-      const cookie = document.cookie
-        .split('; ')
-        .find((r) => r.startsWith('employeeNumber='))
-        ?.split('=')[1];
-      if (cookie) {
-        setEmployeeNumber(cookie);
-      } else if (redirect) {
-        router.push('/core');
-      }
+    if (!isAuthenticated) {
+      router.push('/login');
+      return;
     }
-  }, [employeeNumber, redirect, router, setEmployeeNumber]);
+
+    if (!employeeNumber) {
+      router.push('/landing');
+    }
+  }, [isAuthenticated, employeeNumber, router]);
 
   return employeeNumber;
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { useAuthStore } from '../../../lib/useAuthStore';
+import { useAuthStore } from '../../../../src/store/auth';
 import { useRouter } from 'next/router';
 
 export default function SelectEmployee() {

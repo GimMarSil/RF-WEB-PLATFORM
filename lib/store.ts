@@ -1,1 +1,1 @@
-export { useAuthStore as useAppStore } from './useAuthStore';
+export { useAuthStore as useAppStore } from '../src/store/auth';
