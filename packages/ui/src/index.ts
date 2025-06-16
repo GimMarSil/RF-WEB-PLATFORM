@@ -20,3 +20,4 @@ export * from './components/app-shortcut-card';
 export * from './components/modal';
 export * from './components/theme-provider';
 export * from './components/theme-toggle';
+export { default as Layout } from './components/layout';
