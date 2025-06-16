@@ -66,6 +66,11 @@ Como usar na tua app:
 import { Button } from '@RFWebApp/ui';
 <Button variant="primary">Salvar</Button>;
 ```
+Outro exemplo com `AppShortcutCard`:
+```tsx
+import { AppShortcutCard } from '@RFWebApp/ui';
+<AppShortcutCard title="RH" icon="👥" href="/rh" />
+```
 
 Tailwind com preset da UI:
 
@@ -83,6 +88,7 @@ export default {
 Envvolva a aplicação com `ThemeProvider` e importe `@RFWebApp/ui/styles/themes.css`.
 Use o hook `usePrefs` ou o componente `ThemeToggle` para alterar entre `light`,
 `dark` e `high-contrast`. As preferências são guardadas em `localStorage`.
+Existe uma página `/settings` onde o utilizador pode mudar o tema e definir o funcionário ativo.
 
 🧠 Adicionar um novo microserviço
 
@@ -130,6 +136,11 @@ SELECT Number, Name FROM Employee WHERE UserId = @upn AND Active = 1
 - Se múltiplos: mostrar UI de seleção de funcionário
 - Guardar `employeeNumber` via Zustand + localStorage
 - Middleware bloqueia apps sensíveis se não houver funcionário
+- Store persistente `useAuthStore` mantém `employeeNumber`, `userName` e `roles`.
+- Hook `useRequireAuth` redireciona para `/login` ou `/landing`.
+- Endpoint `/api/funcionarios?email=...` devolve os funcionários associados.
+- A página `/landing` usa esse endpoint para selecionar o funcionário ativo.
+- Cada app possui `middleware.ts` que valida os cookies `AuthSession` e `Employee`.
 
 📱 Página de apps disponíveis (`/apps`)
 
