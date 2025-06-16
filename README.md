@@ -41,6 +41,34 @@ Copie `.env.example` para `.env.local` e preencha com as suas credenciais:
 cp .env.example .env.local
 ```
 
+🌍 Variáveis de Ambiente
+
+Após copiar o ficheiro de exemplo, preencha cada entrada conforme a descrição abaixo. Variáveis acessíveis no cliente devem obrigatoriamente começar com `NEXT_PUBLIC_`.
+
+| Variável | Descrição |
+| --- | --- |
+| `NEXT_PUBLIC_AZURE_CLIENT_ID` | Client ID da aplicação Azure AD utilizada pelo frontend |
+| `NEXT_PUBLIC_AZURE_AUTHORITY` | URL do tenant no Azure AD |
+| `NEXT_PUBLIC_REDIRECT_URI` | URL de redirecionamento configurada na aplicação |
+| `AZURE_AD_CLIENT_ID` | Client ID do backend protegido |
+| `AZURE_AD_CLIENT_SECRET` | Segredo da aplicação (**apenas no servidor**) |
+| `AZURE_AD_TENANT_ID` | Tenant ID da organização |
+| `AZURE_AD_REDIRECT_URI` | URL de redirecionamento utilizada pelo backend |
+| `AZURE_AD_API_AUDIENCE` | Application ID URI da API protegida |
+| `NEXT_PUBLIC_API_SCOPES` | Escopos pedidos pelo frontend |
+| `SQL_SERVER` | Endereço do SQL Server |
+| `SQL_USER` | Utilizador da base de dados |
+| `SQL_PASSWORD` | Palavra-passe do utilizador (**server only**) |
+| `SQL_DATABASE` | Nome da base de dados |
+| `AZURE_OPENAI_ENDPOINT` | Endpoint do serviço Azure OpenAI |
+| `AZURE_OPENAI_DEPLOYMENT` | Nome do deployment no Azure OpenAI |
+| `AZURE_OPENAI_API_VERSION` | Versão da API Azure OpenAI |
+| `AZURE_OPENAI_API_KEY` | Chave de acesso ao Azure OpenAI |
+
+Credenciais Azure AD podem ser obtidas no portal do Azure em **Azure Active Directory → Registos de Aplicações**. Lá encontra o `Application (client) ID`, o `Directory (tenant) ID` e pode gerar o `client secret` em **Certificates & secrets**.
+Os detalhes de ligação à base de dados (`SQL_SERVER`, `SQL_USER`, `SQL_PASSWORD`, `SQL_DATABASE`) são fornecidos pela equipa de infraestruturas ou pela configuração da instância SQL existente.
+
+Lembre-se de que `AZURE_AD_CLIENT_SECRET` e todas as credenciais `SQL_*` devem permanecer apenas no servidor e nunca serem expostas ao cliente.
 Cada micro-serviço possui o seu próprio script `dev`. Não existe `pnpm run dev` na raiz.
 Para iniciar uma aplicação específica use `--filter`:
 
