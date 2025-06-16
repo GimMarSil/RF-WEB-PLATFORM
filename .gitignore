@@ -19,3 +19,6 @@
 .vscode/
 .idea/
 .DS_Store
+
+# Ignore npm lock files to rely solely on pnpm-lock.yaml
+**/package-lock.json
