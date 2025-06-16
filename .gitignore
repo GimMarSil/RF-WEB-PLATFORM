@@ -4,6 +4,7 @@
 # Ignora pastas de build comuns
 **/dist/
 **/build/
+**/.next/
 
 # Logs
 **/npm-debug.log*

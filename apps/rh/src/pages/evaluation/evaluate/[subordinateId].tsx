@@ -67,19 +67,15 @@ const EvaluationFormPage = () => {
       const apiClientOptions: ApiClientOptions = {
         msalInstance: instance as PublicClientApplication,
         selectedEmployeeId: managerEmployeeId, // Manager's ID is the acting user
+        interactionStatus: inProgress,
+        activeAccount: accounts[0] || null,
       };
 
       try {
         console.log(`Fetching evaluation data for subordinate: ${subordinateId}, by manager: ${managerEmployeeId}`);
-        // TODO: Replace with actual API endpoint and data structure
-        // This endpoint would need to:
-        // 1. Find or initiate an employee_evaluation for the subordinateId, managerEmployeeId, and current period/matrix.
-        // 2. Fetch the relevant evaluation_matrix and its criteria.
-        // 3. Fetch any existing self_evaluation scores and manager_evaluation scores.
-        // 4. Get subordinate's name/details.
         const fetchedData = await fetchWithAuth<SubordinateEvaluationData>(
-          `/api/evaluation/form-data/${subordinateId}`, // Placeholder API endpoint
-          { method: 'GET' }, // Potentially POST if it needs to initiate an evaluation record
+          `/api/evaluation/form-data/${subordinateId}`,
+          { method: 'GET' },
           apiClientOptions
         );
         setEvaluationData(fetchedData);
@@ -160,20 +156,47 @@ const EvaluationFormPage = () => {
                 <h3 className="text-lg font-semibold text-gray-700">{criterion.name}</h3>
                 <p className="text-sm text-gray-500 mb-1">Peso: {criterion.weight}%</p>
                 {criterion.description && <p className="text-sm text-gray-600 mb-3">{criterion.description}</p>}
-                
-                {/* TODO: Add fields for Self-Evaluation scores/comments (read-only if submitted) */}
-                {/* TODO: Add fields for Manager scores/comments */}
+
+                {/* Self-evaluation data if available */}
+                {criterion.self_achievement_percentage !== undefined && (
+                  <div className="mt-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Autoavaliação (% Realização):
+                    </label>
+                    <input
+                      type="number"
+                      readOnly
+                      value={criterion.self_achievement_percentage ?? ''}
+                      className="mt-1 block w-full sm:w-1/2 md:w-1/3 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-gray-100"
+                    />
+                  </div>
+                )}
+                {criterion.self_comments && (
+                  <div className="mt-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Comentários do Colaborador:
+                    </label>
+                    <textarea
+                      readOnly
+                      value={criterion.self_comments}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-gray-100"
+                      rows={3}
+                    />
+                  </div>
+                )}
+
+                {/* Manager input fields */}
                 <div className="mt-2">
                   <label htmlFor={`manager_score_${criterion.id}`} className="block text-sm font-medium text-gray-700">
                     Pontuação do Gestor (% Realização):
                   </label>
-                  <input 
+                  <input
                     type="number"
                     id={`manager_score_${criterion.id}`}
                     name={`manager_score_${criterion.id}`}
                     min="0"
                     max="100"
-                    // value={...} onChange={...} 
+                    defaultValue={criterion.manager_achievement_percentage ?? ''}
                     className="mt-1 block w-full sm:w-1/2 md:w-1/3 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     placeholder="0-100"
                   />
@@ -182,11 +205,11 @@ const EvaluationFormPage = () => {
                   <label htmlFor={`manager_comments_${criterion.id}`} className="block text-sm font-medium text-gray-700">
                     Observações do Gestor:
                   </label>
-                  <textarea 
+                  <textarea
                     id={`manager_comments_${criterion.id}`}
                     name={`manager_comments_${criterion.id}`}
                     rows={3}
-                    // value={...} onChange={...}
+                    defaultValue={criterion.manager_comments ?? ''}
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     placeholder="Comentários sobre o desempenho neste critério..."
                   />
