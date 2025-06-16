@@ -1,26 +1,41 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Pool } from 'pg';
+import * as jose from 'jose';
+import { pool, executeQuery } from '../../../../../../../../../lib/db/pool';
 
-// TODO: Ideally, use a shared DB pool module
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }, // Adjust based on your DB hosting requirements
-});
-
-// Renamed: Helper to get the actual logged-in system user ID (e.g., from MSAL)
+// Validate bearer token using Azure AD and return the user ID
 async function getAuthenticatedSystemUserId(req: NextApiRequest): Promise<string | null> {
-  // TODO: Replace with your ACTUAL MSAL token validation and user ID extraction.
-  console.warn('MATRIX_CRITERIA_API: Using placeholder system User ID. Integrate actual MSAL authentication.');
-  return 'logged-in-system-user-via-msal'; 
+  const auth = req.headers.authorization;
+  if (!auth?.startsWith('Bearer ')) return null;
+  const token = auth.split(' ')[1];
+  const tenant = process.env.AZURE_AD_TENANT_ID;
+  const audience = process.env.AZURE_AD_API_AUDIENCE || process.env.AZURE_AD_CLIENT_ID;
+  if (!tenant || !audience) return null;
+  try {
+    const JWKS = jose.createRemoteJWKSet(new URL(`https://login.microsoftonline.com/${tenant}/discovery/v2.0/keys`));
+    const { payload } = await jose.jwtVerify(token, JWKS, { issuer: `https://login.microsoftonline.com/${tenant}/v2.0`, audience });
+    const id = payload.oid || payload.sub;
+    return typeof id === 'string' ? id : null;
+  } catch (err) {
+    console.error('Token validation failed', err);
+    return null;
+  }
 }
 
 // Helper to get the Employee ID the user is currently acting as (selected on landing)
-function getSelectedEmployeeId(req: NextApiRequest): string | null {
-    const fromHeader = req.headers['x-selected-employee-id'];
-    if (fromHeader) return Array.isArray(fromHeader) ? fromHeader[0] : fromHeader;
-    if (req.body && req.body.actingAsEmployeeId) return req.body.actingAsEmployeeId; 
-    console.warn('MATRIX_CRITERIA_API: selectedEmployeeId not found in headers (X-Selected-Employee-ID) or body (actingAsEmployeeId).');
-    return null; 
+async function getSelectedEmployeeId(req: NextApiRequest, userId: string): Promise<string | null> {
+    const fromHeader = req.headers['x-selected-employee-id'] as string | undefined;
+    const selectedEmployeeId = fromHeader || (req.body && (req.body.actingAsEmployeeId as string));
+    if (!selectedEmployeeId) {
+        console.warn('MATRIX_CRITERIA_API: selectedEmployeeId not found in headers (X-Selected-Employee-ID) or body (actingAsEmployeeId).');
+        return null;
+    }
+    try {
+        const result = await executeQuery('SELECT 1 FROM employees WHERE employee_number = $1 AND user_id = $2', [selectedEmployeeId, userId]);
+        return result.length > 0 ? selectedEmployeeId : null;
+    } catch (err) {
+        console.error('Error validating selected employee', err);
+        return null;
+    }
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -44,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   // For managing criteria, authorization should check if the user (via selectedEmployeeId or system user role) has RH/Admin rights.
-  const selectedEmployeeId = getSelectedEmployeeId(req);
+  const selectedEmployeeId = await getSelectedEmployeeId(req, authenticatedSystemUserId);
   // TODO: Implement role-based authorization for managing criteria (typically RH/Admin).
   // if (!userHasAdminRightsToManageCriteria(selectedEmployeeId, authenticatedSystemUserId)) {
   //    return res.status(403).json({ message: 'Forbidden: User does not have rights to manage criteria for this matrix.'});
