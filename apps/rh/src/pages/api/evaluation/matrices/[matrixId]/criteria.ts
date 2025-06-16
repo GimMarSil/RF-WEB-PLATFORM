@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import * as jose from 'jose';
 import { pool, executeQuery } from '../../../../../../../../../lib/db/pool';
+import { userHasAdminRightsToManageCriteria } from '../../../../../lib/authz';
 
 // Validate bearer token using Azure AD and return the user ID
 async function getAuthenticatedSystemUserId(req: NextApiRequest): Promise<string | null> {
@@ -60,10 +61,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // For managing criteria, authorization should check if the user (via selectedEmployeeId or system user role) has RH/Admin rights.
   const selectedEmployeeId = await getSelectedEmployeeId(req, authenticatedSystemUserId);
-  // TODO: Implement role-based authorization for managing criteria (typically RH/Admin).
-  // if (!userHasAdminRightsToManageCriteria(selectedEmployeeId, authenticatedSystemUserId)) {
-  //    return res.status(403).json({ message: 'Forbidden: User does not have rights to manage criteria for this matrix.'});
-  // }
+  // Verify RH/Admin permissions
+  const hasRights = await userHasAdminRightsToManageCriteria(
+    selectedEmployeeId,
+    authenticatedSystemUserId
+  );
+  if (!hasRights) {
+    return res.status(403).json({
+      message: 'Forbidden: User does not have rights to manage criteria for this matrix.'
+    });
+  }
 
   const client = await pool.connect();
   try {
