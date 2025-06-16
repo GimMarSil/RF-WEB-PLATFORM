@@ -5,7 +5,7 @@ import { PublicClientApplication } from '@azure/msal-browser';
 import { authConfig } from '../authConfig';
 import '../styles/globals.css';
 import { ThemeProvider } from '@RFWebApp/ui';
-import { useAnalytics } from '../../../lib/useAnalytics';
+import { useAnalytics } from '@lib/useAnalytics';
 
 const msalInstance = new PublicClientApplication({
   auth: {
