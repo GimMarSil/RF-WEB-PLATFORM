@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    transpilePackages: ['@rfwebapp/ui']
-  }
+  transpilePackages: ['@rfwebapp/ui']
 };
 
 module.exports = nextConfig;
