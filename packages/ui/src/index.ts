@@ -1,3 +1,5 @@
+import './styles/themes.css';
+
 export * from './components/accordion';
 export * from './components/avatar';
 export * from './components/badge';

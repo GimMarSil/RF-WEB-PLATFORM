@@ -4,7 +4,6 @@ import { MsalProvider } from '@azure/msal-react';
 import { PublicClientApplication } from '@azure/msal-browser';
 import { authConfig } from '../config/authConfig';
 import '../styles/globals.css';
-import '@RFWebApp/ui/styles/themes.css';
 import { ThemeProvider } from '@RFWebApp/ui';
 import { useAnalytics } from '../../../lib/useAnalytics';
 import { FuncionarioProvider } from '../context/FuncionarioContext';
