@@ -1,15 +1,6 @@
-import { Pool } from 'pg';
+import pool from '../../lib/dbPool';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-});
-
-// Test connection on startup
-pool.on('error', (err) => {
-  console.error('Unexpected error on idle client', err);
-  process.exit(-1);
-});
+// Test connection established by dbPool
 
 // Helper function to normalize dates to YYYY-MM-DD format
 function normalizeDate(date: string | Date | undefined): string {

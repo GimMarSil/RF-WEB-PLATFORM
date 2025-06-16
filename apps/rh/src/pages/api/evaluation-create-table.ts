@@ -1,13 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Pool } from 'pg';
+import pool from '../../lib/dbPool';
 import fs from 'fs';
 import path from 'path';
 import sql from 'mssql';
-
-const pgPool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-});
 
 const sqlConfig = {
   user: process.env.SQL_USER,
@@ -26,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
 
-  const client = await pgPool.connect();
+  const client = await pool.connect();
   try {
     await client.query('BEGIN');
 
