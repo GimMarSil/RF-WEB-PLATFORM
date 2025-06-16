@@ -1,4 +1,5 @@
-require('dotenv').config({ path: '.env.local' });
+// Load environment variables from .env.local
+require('../../../../../lib/loadEnv.js');
 const { Client } = require('pg');
 
 // Configuração Postgres (Railway)
