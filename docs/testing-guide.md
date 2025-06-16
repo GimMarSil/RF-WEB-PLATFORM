@@ -44,3 +44,19 @@ Use-o como referência para novos componentes e páginas.
 
 Cada micro-serviço também possui um teste de **smoke** em `src/__tests__/home.test.tsx`,
 útil para validação rápida do carregamento da página inicial.
+
+## Componentes com contexto
+
+Alguns componentes da UI dependem de providers como `ThemeProvider`. Caso o teste
+gere erros como `usePrefs must be used within ThemeProvider`, envolva o componente
+com o provider correspondente:
+
+```tsx
+import { ThemeProvider } from '@RFWebApp/ui';
+
+render(
+  <ThemeProvider>
+    <MyComponent />
+  </ThemeProvider>
+);
+```
