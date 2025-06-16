@@ -18,11 +18,13 @@ const msalInstance = new PublicClientApplication({
 function MyApp({ Component, pageProps }: AppProps) {
   useAnalytics('core');
   return (
-    <ThemeProvider>
-      <MsalProvider instance={msalInstance}>
-        <Component {...pageProps} />
-      </MsalProvider>
-    </ThemeProvider>
+    <ThemeProvider
+      children={
+        <MsalProvider instance={msalInstance}>
+          <Component {...pageProps} />
+        </MsalProvider>
+      }
+    />
   );
 }
 

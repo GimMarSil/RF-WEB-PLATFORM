@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppCard } from '@RFWebApp/ui';
-import { useRequireAuth } from '../../../lib/useRequireAuth';
+import { useRequireAuth } from '../../../../lib/useRequireAuth';
 
 export default function AppsPage() {
   const employee = useRequireAuth();
