@@ -13,6 +13,7 @@
 # Arquivos de ambiente
 **/.env
 **/.env.*
+!.env.example
 
 # Configurações de IDE
 .vscode/

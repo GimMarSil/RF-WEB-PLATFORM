@@ -1,3 +1,5 @@
+import './styles/themes.css';
+
 export * from './components/accordion';
 export * from './components/avatar';
 export * from './components/badge';
@@ -13,3 +15,7 @@ export * from './components/switch';
 export * from './components/table';
 export * from './components/tabs';
 export * from './components/textarea';
+export * from './components/app-card';
+export * from './components/modal';
+export * from './components/theme-provider';
+export * from './components/theme-toggle';

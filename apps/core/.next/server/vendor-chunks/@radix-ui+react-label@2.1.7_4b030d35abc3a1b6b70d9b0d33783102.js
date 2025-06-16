@@ -1,0 +1,25 @@
+"use strict";
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+exports.id = "vendor-chunks/@radix-ui+react-label@2.1.7_4b030d35abc3a1b6b70d9b0d33783102";
+exports.ids = ["vendor-chunks/@radix-ui+react-label@2.1.7_4b030d35abc3a1b6b70d9b0d33783102"];
+exports.modules = {
+
+/***/ "../../node_modules/.pnpm/@radix-ui+react-label@2.1.7_4b030d35abc3a1b6b70d9b0d33783102/node_modules/@radix-ui/react-label/dist/index.mjs":
+/*!***********************************************************************************************************************************************!*\
+  !*** ../../node_modules/.pnpm/@radix-ui+react-label@2.1.7_4b030d35abc3a1b6b70d9b0d33783102/node_modules/@radix-ui/react-label/dist/index.mjs ***!
+  \***********************************************************************************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   Label: () => (/* binding */ Label),\n/* harmony export */   Root: () => (/* binding */ Root)\n/* harmony export */ });\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"react\");\n/* harmony import */ var _radix_ui_react_primitive__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @radix-ui/react-primitive */ \"../../node_modules/.pnpm/@radix-ui+react-primitive@2_e7bb72fe4032c8a5dde134589dd5aa56/node_modules/@radix-ui/react-primitive/dist/index.mjs\");\n/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ \"react/jsx-runtime\");\n\"use client\";\n\n// src/label.tsx\n\n\n\nvar NAME = \"Label\";\nvar Label = react__WEBPACK_IMPORTED_MODULE_0__.forwardRef((props, forwardedRef) => {\n  return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(\n    _radix_ui_react_primitive__WEBPACK_IMPORTED_MODULE_2__.Primitive.label,\n    {\n      ...props,\n      ref: forwardedRef,\n      onMouseDown: (event) => {\n        const target = event.target;\n        if (target.closest(\"button, input, select, textarea\")) return;\n        props.onMouseDown?.(event);\n        if (!event.defaultPrevented && event.detail > 1) event.preventDefault();\n      }\n    }\n  );\n});\nLabel.displayName = NAME;\nvar Root = Label;\n\n//# sourceMappingURL=index.mjs.map\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi4vLi4vbm9kZV9tb2R1bGVzLy5wbnBtL0ByYWRpeC11aStyZWFjdC1sYWJlbEAyLjEuN180YjAzMGQzNWFiYzNhMWI2YjcwZDliMGQzMzc4MzEwMi9ub2RlX21vZHVsZXMvQHJhZGl4LXVpL3JlYWN0LWxhYmVsL2Rpc3QvaW5kZXgubWpzIiwibWFwcGluZ3MiOiI7Ozs7Ozs7O0FBQUE7O0FBRUE7QUFDK0I7QUFDdUI7QUFDZDtBQUN4QztBQUNBLFlBQVksNkNBQWdCO0FBQzVCLHlCQUF5QixzREFBRztBQUM1QixJQUFJLGdFQUFTO0FBQ2I7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBLENBQUM7QUFDRDtBQUNBO0FBSUU7QUFDRiIsInNvdXJjZXMiOlsid2VicGFjazovL2NvcmUvLi4vLi4vbm9kZV9tb2R1bGVzLy5wbnBtL0ByYWRpeC11aStyZWFjdC1sYWJlbEAyLjEuN180YjAzMGQzNWFiYzNhMWI2YjcwZDliMGQzMzc4MzEwMi9ub2RlX21vZHVsZXMvQHJhZGl4LXVpL3JlYWN0LWxhYmVsL2Rpc3QvaW5kZXgubWpzP2JhN2IiXSwic291cmNlc0NvbnRlbnQiOlsiXCJ1c2UgY2xpZW50XCI7XG5cbi8vIHNyYy9sYWJlbC50c3hcbmltcG9ydCAqIGFzIFJlYWN0IGZyb20gXCJyZWFjdFwiO1xuaW1wb3J0IHsgUHJpbWl0aXZlIH0gZnJvbSBcIkByYWRpeC11aS9yZWFjdC1wcmltaXRpdmVcIjtcbmltcG9ydCB7IGpzeCB9IGZyb20gXCJyZWFjdC9qc3gtcnVudGltZVwiO1xudmFyIE5BTUUgPSBcIkxhYmVsXCI7XG52YXIgTGFiZWwgPSBSZWFjdC5mb3J3YXJkUmVmKChwcm9wcywgZm9yd2FyZGVkUmVmKSA9PiB7XG4gIHJldHVybiAvKiBAX19QVVJFX18gKi8ganN4KFxuICAgIFByaW1pdGl2ZS5sYWJlbCxcbiAgICB7XG4gICAgICAuLi5wcm9wcyxcbiAgICAgIHJlZjogZm9yd2FyZGVkUmVmLFxuICAgICAgb25Nb3VzZURvd246IChldmVudCkgPT4ge1xuICAgICAgICBjb25zdCB0YXJnZXQgPSBldmVudC50YXJnZXQ7XG4gICAgICAgIGlmICh0YXJnZXQuY2xvc2VzdChcImJ1dHRvbiwgaW5wdXQsIHNlbGVjdCwgdGV4dGFyZWFcIikpIHJldHVybjtcbiAgICAgICAgcHJvcHMub25Nb3VzZURvd24/LihldmVudCk7XG4gICAgICAgIGlmICghZXZlbnQuZGVmYXVsdFByZXZlbnRlZCAmJiBldmVudC5kZXRhaWwgPiAxKSBldmVudC5wcmV2ZW50RGVmYXVsdCgpO1xuICAgICAgfVxuICAgIH1cbiAgKTtcbn0pO1xuTGFiZWwuZGlzcGxheU5hbWUgPSBOQU1FO1xudmFyIFJvb3QgPSBMYWJlbDtcbmV4cG9ydCB7XG4gIExhYmVsLFxuICBSb290XG59O1xuLy8jIHNvdXJjZU1hcHBpbmdVUkw9aW5kZXgubWpzLm1hcFxuIl0sIm5hbWVzIjpbXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///../../node_modules/.pnpm/@radix-ui+react-label@2.1.7_4b030d35abc3a1b6b70d9b0d33783102/node_modules/@radix-ui/react-label/dist/index.mjs\n");
+
+/***/ })
+
+};
+;
