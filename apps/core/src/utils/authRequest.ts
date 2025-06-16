@@ -1,3 +1,4 @@
 export const loginRequest = {
-  scopes: [process.env.NEXT_PUBLIC_API_SCOPES || '']
+  scopes: [process.env.NEXT_PUBLIC_API_SCOPES || ''],
+  redirectUri: '/api/login-callback'
 };
