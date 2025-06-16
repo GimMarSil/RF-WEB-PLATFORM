@@ -34,6 +34,13 @@ Instalar todas as dependências (root + workspaces):
 pnpm install
 ```
 
+Cada micro-serviço possui o seu próprio script `dev`. Não existe `pnpm run dev` na raiz.
+Para iniciar uma aplicação específica use `--filter`:
+
+```bash
+pnpm dev -F core
+```
+
 🔁 Scripts úteis
 | Comando | Descrição |
 |----------------------------------|-------------------------------------------|
