@@ -7,17 +7,18 @@
   "scripts": {
     "lint": "eslint \"**/*.{ts,tsx,js}\"",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
-    "clean": "rimraf \"**/dist\" \"**/build\""
+    "clean": "rimraf \"**/dist\" \"**/build\"",
+    "dev": "node -e \"console.log('Especifique a app: pnpm dev -F <nome>');\""
   },
   "devDependencies": {
-    "tailwindcss": "^4.1.10",
-    "eslint": "^8.57.1",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
-    "@typescript-eslint/parser": "^7.18.0",
+    "@typescript-eslint/eslint-plugin": "^8.34.0",
+    "@typescript-eslint/parser": "^8.34.0",
+    "eslint": "^9.29.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react": "^7.37.5",
     "prettier": "^3.5.3",
-    "eslint-config-prettier": "^9.1.0",
-    "rimraf": "^5.0.10"
+    "rimraf": "^5.0.10",
+    "tailwindcss": "^4.1.10"
   },
   "dependencies": {
     "clsx": "^2.1.1",
