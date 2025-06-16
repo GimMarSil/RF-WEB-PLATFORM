@@ -11,7 +11,9 @@ export default function Home() {
     if (!instance.getActiveAccount()) {
       instance.loginRedirect(loginRequest);
     } else {
-      router.replace('/apps');
+      fetch('/api/login-callback').then(() => {
+        router.replace('/landing');
+      });
     }
   }, [instance, router]);
 
