@@ -1,3 +1,10 @@
+import { Button } from '@RFWebApp/ui';
+
 export default function Home() {
-  return <div className="p-4">Autos app</div>;
+  return (
+    <div className="p-4 space-y-2">
+      <div>Autos app</div>
+      <Button>Example Button</Button>
+    </div>
+  );
 }
