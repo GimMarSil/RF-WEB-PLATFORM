@@ -34,6 +34,7 @@ Instalar todas as dependências (root + workspaces):
 pnpm install
 ```
 
+
 Copie `.env.example` para `.env.local` e preencha com as suas credenciais:
 
 ```bash
