@@ -2,8 +2,8 @@ import { render, screen } from '@testing-library/react'
 import Home from '../pages/index'
 
 describe('Timesheet Home', () => {
-  it('shows Example Button', () => {
+  it('shows Timesheet app text', () => {
     render(<Home />)
-    expect(screen.getByRole('button', { name: 'Example Button' })).toBeInTheDocument()
+    expect(screen.getByText('Timesheet app')).toBeInTheDocument()
   })
 })
