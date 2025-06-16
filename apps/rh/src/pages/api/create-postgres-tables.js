@@ -1,5 +1,5 @@
 // Load environment variables from .env.local
-require('../../../../../lib/loadEnv.js');
+require('@rfwebapp/lib/loadEnv.js');
 const { Client } = require('pg');
 
 // Configuração Postgres (Railway)

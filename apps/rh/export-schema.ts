@@ -2,7 +2,7 @@ import { Pool } from 'pg';
 import * as fs from 'fs';
 
 // Load environment variables from .env.local
-import '../../lib/loadEnv.js';
+import '@rfwebapp/lib/loadEnv.js';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,

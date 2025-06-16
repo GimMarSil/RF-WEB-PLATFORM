@@ -8,7 +8,7 @@
  *************************************************************/
 
 // Load environment variables from .env.local
-require('../../../../../lib/loadEnv.js');
+require('@rfwebapp/lib/loadEnv.js');
 const sql = require('mssql');
 const { Client } = require('pg');
 
