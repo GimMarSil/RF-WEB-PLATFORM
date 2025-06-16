@@ -1,34 +1,45 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Pool } from 'pg';
 import { withAuth, AuthenticatedRequest, getUserManager } from '../../../middleware/auth';
 import { withErrorHandler, ValidationError, NotFoundError, AuthorizationError } from '../../../lib/errors';
-import { executeQuery, executeTransaction } from '../../../lib/db/pool';
+import { executeQuery, executeTransaction } from '../../../../../../../lib/db/pool';
 import { z } from 'zod';
 
-// TODO: Ideally, use a shared DB pool module
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }, // Adjust based on your DB hosting requirements
-});
 
 // Helper to get authenticated user ID (replace with your actual auth logic)
+import * as jose from 'jose';
 async function getAuthenticatedSystemUserId(req: NextApiRequest): Promise<string | null> {
-  // TODO: Replace with actual MSAL or equivalent authentication logic
-  console.warn('Using placeholder system user ID for audit logs in self-evaluations API. Integrate actual authentication.');
-  return 'system-placeholder-user-id'; // Example: MSAL Object ID
+  const auth = req.headers.authorization;
+  if (!auth?.startsWith('Bearer ')) return null;
+  const token = auth.split(' ')[1];
+  const tenant = process.env.AZURE_AD_TENANT_ID;
+  const audience = process.env.AZURE_AD_API_AUDIENCE || process.env.AZURE_AD_CLIENT_ID;
+  if (!tenant || !audience) return null;
+  try {
+    const JWKS = jose.createRemoteJWKSet(new URL(`https://login.microsoftonline.com/${tenant}/discovery/v2.0/keys`));
+    const { payload } = await jose.jwtVerify(token, JWKS, { issuer: `https://login.microsoftonline.com/${tenant}/v2.0`, audience });
+    const id = payload.oid || payload.sub;
+    return typeof id === 'string' ? id : null;
+  } catch (err) {
+    console.error('Token validation failed', err);
+    return null;
+  }
 }
 
 // Helper to get the selected Employee ID (e.g., from a custom header or session)
-async function getSelectedEmployeeId(req: NextApiRequest): Promise<string | null> {
-  // TODO: Implement logic to retrieve selected employee ID.
-  const selectedEmployeeId = req.headers['x-selected-employee-id'] as string;
+async function getSelectedEmployeeId(req: NextApiRequest, userId: string): Promise<string | null> {
+  const selectedEmployeeId = (req.headers['x-selected-employee-id'] as string | undefined) || (req.body && req.body.actingAsEmployeeId as string);
   if (!selectedEmployeeId) {
-    // For self-evaluations, selectedEmployeeId is almost always required.
     console.warn('X-Selected-Employee-ID header not found for self-evaluations API. This is critical.');
     return null;
   }
-  console.log(`Retrieved selectedEmployeeId: ${selectedEmployeeId} from header for self-evaluations API.`);
-  return selectedEmployeeId;
+  try {
+    const result = await executeQuery('SELECT 1 FROM employees WHERE employee_number = $1 AND user_id = $2', [selectedEmployeeId, userId]);
+    if (result.length === 0) return null;
+    return selectedEmployeeId;
+  } catch (err) {
+    console.error('Error validating selected employee', err);
+    return null;
+  }
 }
 
 // Validation schemas

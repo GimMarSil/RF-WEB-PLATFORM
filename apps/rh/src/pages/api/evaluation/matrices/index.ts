@@ -1,28 +1,50 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Pool } from 'pg';
+import { pool, executeQuery } from '../../../../../../../../lib/db/pool';
 import { canManageMatrix } from '../../../../lib/evaluation/auth';
 import { validateMatrixInput } from '../../../../lib/evaluation/validation';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-});
 
-// Helper to get authenticated user ID
+import * as jose from 'jose';
+
+// Helper to validate the bearer token and return the user ID (oid or sub)
 async function getAuthenticatedSystemUserId(req: NextApiRequest): Promise<string | null> {
-  // TODO: Replace with actual MSAL or equivalent authentication logic
-  console.warn('Using placeholder system user ID for audit logs in matrices API. Integrate actual authentication.');
-  return 'system-placeholder-user-id';
+  const auth = req.headers.authorization;
+  if (!auth?.startsWith('Bearer ')) {
+    return null;
+  }
+  const token = auth.split(' ')[1];
+  const tenant = process.env.AZURE_AD_TENANT_ID;
+  const audience = process.env.AZURE_AD_API_AUDIENCE || process.env.AZURE_AD_CLIENT_ID;
+  if (!tenant || !audience) return null;
+  try {
+    const JWKS = jose.createRemoteJWKSet(new URL(`https://login.microsoftonline.com/${tenant}/discovery/v2.0/keys`));
+    const { payload } = await jose.jwtVerify(token, JWKS, {
+      issuer: `https://login.microsoftonline.com/${tenant}/v2.0`,
+      audience,
+    });
+    const id = payload.oid || payload.sub;
+    return typeof id === 'string' ? id : null;
+  } catch (err) {
+    console.error('Token validation failed', err);
+    return null;
+  }
 }
 
 // Helper to get the selected Employee ID
-async function getSelectedEmployeeId(req: NextApiRequest): Promise<string | null> {
-  const selectedEmployeeId = req.headers['x-selected-employee-id'] as string;
+async function getSelectedEmployeeId(req: NextApiRequest, userId: string): Promise<string | null> {
+  const headerValue = req.headers['x-selected-employee-id'] as string | undefined;
+  const selectedEmployeeId = headerValue || (req.body && (req.body.actingAsEmployeeId as string));
   if (!selectedEmployeeId) {
     console.warn('X-Selected-Employee-ID header not found for matrices API.');
     return null;
   }
-  return selectedEmployeeId;
+  try {
+    const result = await executeQuery('SELECT 1 FROM employees WHERE employee_number = $1 AND user_id = $2', [selectedEmployeeId, userId]);
+    return result.length > 0 ? selectedEmployeeId : null;
+  } catch (err) {
+    console.error('Error validating selected employee', err);
+    return null;
+  }
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -37,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(401).json({ message: 'Unauthorized: Authenticated system user ID not available.' });
     }
 
-    selectedEmployeeId = await getSelectedEmployeeId(req);
+    selectedEmployeeId = await getSelectedEmployeeId(req, authenticatedSystemUserId);
     if (!selectedEmployeeId) {
       return res.status(403).json({ message: 'Forbidden: Selected Employee ID required for matrix operations.' });
     }

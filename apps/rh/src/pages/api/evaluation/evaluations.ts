@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { withAuth, AuthenticatedRequest } from '../../../middleware/auth';
 import { withErrorHandler, ValidationError, NotFoundError, AuthorizationError } from '../../../lib/errors';
-import { executeQuery, executeTransaction } from '../../../lib/db/pool';
+import { executeQuery, executeTransaction } from '../../../../../../../lib/db/pool';
 import { z } from 'zod';
 import { getEmployeeDetailsByNumber } from '../../../lib/employeeDbService';
 

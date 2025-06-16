@@ -1,34 +1,43 @@
 import { NextApiResponse } from 'next';
-import { Pool } from 'pg';
 import { withAuth, AuthenticatedRequest, isAdmin, isManager } from '../../../../middleware/auth';
 import { validateMatrixInput } from '../../../../lib/evaluation/validation';
-
-// TODO: Ideally, use a shared DB pool module
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }, // Adjust based on your DB hosting requirements
-});
+import * as jose from 'jose';
+import { pool, executeQuery } from '../../../../../../../../lib/db/pool';
 
 // Helper to get authenticated user ID (replace with your actual auth logic)
 async function getAuthenticatedSystemUserId(req: AuthenticatedRequest): Promise<string | null> {
-  // TODO: Replace with actual MSAL or equivalent authentication logic
-  // This ID is the system-wide user identifier, used for audit trails (e.g., created_by_user_id)
-  console.warn('Using placeholder system user ID for audit logs in individual criterion API. Integrate actual authentication.');
-  return 'system-placeholder-user-id'; // Example: MSAL Object ID
+  const auth = req.headers.authorization;
+  if (!auth?.startsWith('Bearer ')) return null;
+  const token = auth.split(' ')[1];
+  const tenant = process.env.AZURE_AD_TENANT_ID;
+  const audience = process.env.AZURE_AD_API_AUDIENCE || process.env.AZURE_AD_CLIENT_ID;
+  if (!tenant || !audience) return null;
+  try {
+    const JWKS = jose.createRemoteJWKSet(new URL(`https://login.microsoftonline.com/${tenant}/discovery/v2.0/keys`));
+    const { payload } = await jose.jwtVerify(token, JWKS, { issuer: `https://login.microsoftonline.com/${tenant}/v2.0`, audience });
+    const id = payload.oid || payload.sub;
+    return typeof id === 'string' ? id : null;
+  } catch (err) {
+    console.error('Token validation failed', err);
+    return null;
+  }
 }
 
 // Helper to get the selected Employee ID (e.g., from a custom header or session)
-async function getSelectedEmployeeId(req: AuthenticatedRequest): Promise<string | null> {
-  // TODO: Implement logic to retrieve selected employee ID.
-  // This ID represents the employee profile the user is currently acting as.
-  // It's used for role-based access and business logic (e.g., manager_id, employee_id).
-  const selectedEmployeeId = req.headers['x-selected-employee-id'] as string;
+async function getSelectedEmployeeId(req: AuthenticatedRequest, userId: string): Promise<string | null> {
+  const selectedEmployeeId = (req.headers['x-selected-employee-id'] as string | undefined) || (req.body && req.body.actingAsEmployeeId as string);
   if (!selectedEmployeeId) {
     console.warn('X-Selected-Employee-ID header not found. Operations may fail authorization.');
     return null;
   }
-  console.log(`Retrieved selectedEmployeeId: ${selectedEmployeeId} from header for criterion operations.`);
-  return selectedEmployeeId; 
+  try {
+    const result = await executeQuery('SELECT 1 FROM employees WHERE employee_number = $1 AND user_id = $2', [selectedEmployeeId, userId]);
+    if (result.length === 0) return null;
+    return selectedEmployeeId;
+  } catch (err) {
+    console.error('Error validating selected employee', err);
+    return null;
+  }
 }
 
 async function handler(req: AuthenticatedRequest, res: NextApiResponse): Promise<void> {
