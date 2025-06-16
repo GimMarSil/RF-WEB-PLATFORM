@@ -1,14 +1,10 @@
-import { Pool } from 'pg';
+import pool from '../../../lib/dbPool';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getAllActiveEmployees, getEmployeeDetailsByUserId, getEmployeeDetailsByNumber } from '../../../lib/employeeDbService';
 import { withAuth, AuthenticatedRequest, isAdmin, isManager, getUserDirectReports } from '../../../middleware/auth';
 import { validateMatrixInput } from '../../../lib/evaluation/validation';
 import * as jose from 'jose';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-});
 
 // Helper to set user ID for logging (if available)
 async function setUserForSession(client, userId) {

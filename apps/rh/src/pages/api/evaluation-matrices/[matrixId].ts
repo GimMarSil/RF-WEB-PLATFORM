@@ -1,13 +1,9 @@
 import { NextApiResponse } from 'next';
-import { Pool } from 'pg';
+import pool from '../../../lib/dbPool';
 import { withAuth, AuthenticatedRequest, isAdmin, getUserDirectReports } from '../../../middleware/auth';
 import { validateMatrixInput } from '../../../lib/evaluation/validation';
 import { validate as validateUUID } from 'uuid';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-});
 
 // Helper function to check if the user can manage the matrix
 async function canUserManageMatrix(

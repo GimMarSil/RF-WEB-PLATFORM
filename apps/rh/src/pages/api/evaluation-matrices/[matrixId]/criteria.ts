@@ -1,11 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Pool } from 'pg';
-import * as jose from 'jose';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-});
+import pool from '../../../../lib/dbPool';
+
+
 
 // Validate bearer token and extract system user id
 async function getAuthenticatedSystemUserId(req: NextApiRequest): Promise<string | null> {
