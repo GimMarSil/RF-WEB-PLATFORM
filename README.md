@@ -230,10 +230,12 @@ Cada microserviço possui um endpoint `api/analytics` que recolhe navegação e
 erros de runtime. O hook `useAnalytics(service)` envia eventos automaticamente
 em cada mudança de rota e captura falhas globais.
 
-✅ A fazer / melhorias futuras
+🛣️ Roadmap para versão 1.0
 
-- [ ] Criar Modal, Tabs, Tooltip, AppCard animados na UI
-- [ ] Criar layout base com Navbar lateral e topbar
-- [ ] Criar design tokens exportáveis para Figma
-- [ ] Publicar `@RFWebApp/ui` em NPM privado (GitHub Packages)
-- [ ] Criar fallback de autenticação para outros provedores (ex: Azure B2B)
+- [ ] [Adicionar componentes animados](https://github.com/GimMarSil/rf-web-platform/issues/1)
+- [ ] [Implementar layout base](https://github.com/GimMarSil/rf-web-platform/issues/2)
+- [ ] [Gerar design tokens para Figma](https://github.com/GimMarSil/rf-web-platform/issues/3)
+- [ ] [Publicar `@RFWebApp/ui` no GitHub Packages](https://github.com/GimMarSil/rf-web-platform/issues/4)
+- [ ] [Adicionar fallback de autenticação](https://github.com/GimMarSil/rf-web-platform/issues/5)
+
+Consulte [docs/roadmap.md](docs/roadmap.md) para mais detalhes sobre estas tarefas.
