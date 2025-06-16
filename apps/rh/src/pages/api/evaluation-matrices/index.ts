@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getAllActiveEmployees, getEmployeeDetailsByUserId, getEmployeeDetailsByNumber } from '../../../lib/employeeDbService';
 import { withAuth, AuthenticatedRequest, isAdmin, isManager, getUserDirectReports } from '../../../middleware/auth';
 import { validateMatrixInput } from '../../../lib/evaluation/validation';
+import * as jose from 'jose';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -32,19 +33,43 @@ async function setUserForSession(client, userId) {
 //   "employee_ids": ["123", "456", "789"]
 // }
 
+// Validate bearer token and extract system user id
 async function getAuthenticatedSystemUserId(req: NextApiRequest): Promise<string | null> {
-  // TODO: Replace with actual MSAL or equivalent authentication logic
-  console.warn('Using placeholder system user ID for audit logs in evaluation matrices API. Integrate actual authentication.');
-  return 'system-placeholder-user-id';
+  const auth = req.headers.authorization;
+  if (!auth?.startsWith('Bearer ')) return null;
+  const token = auth.split(' ')[1];
+  const tenant = process.env.AZURE_AD_TENANT_ID;
+  const audience = process.env.AZURE_AD_API_AUDIENCE || process.env.AZURE_AD_CLIENT_ID;
+  if (!tenant || !audience) return null;
+  try {
+    const JWKS = jose.createRemoteJWKSet(new URL(`https://login.microsoftonline.com/${tenant}/discovery/v2.0/keys`));
+    const { payload } = await jose.jwtVerify(token, JWKS, {
+      issuer: `https://login.microsoftonline.com/${tenant}/v2.0`,
+      audience,
+    });
+    const id = payload.oid || payload.sub;
+    return typeof id === 'string' ? id : null;
+  } catch (err) {
+    console.error('Token validation failed', err);
+    return null;
+  }
 }
 
-async function getSelectedEmployeeId(req: NextApiRequest): Promise<string | null> {
-  const selectedEmployeeId = req.headers['x-selected-employee-id'] as string;
+async function getSelectedEmployeeId(req: NextApiRequest, userId: string): Promise<string | null> {
+  const headerValue = req.headers['x-selected-employee-id'] as string | undefined;
+  const selectedEmployeeId = headerValue || (req.body && (req.body.actingAsEmployeeId as string));
   if (!selectedEmployeeId) {
     console.warn('X-Selected-Employee-ID header not found for evaluation matrices API.');
     return null;
   }
-  return selectedEmployeeId;
+  try {
+    const result = await getEmployeeDetailsByNumber(selectedEmployeeId);
+    if (!result || result.user_id !== userId) return null;
+    return selectedEmployeeId;
+  } catch (err) {
+    console.error('Error validating selected employee', err);
+    return null;
+  }
 }
 
 async function handler(req: AuthenticatedRequest, res: NextApiResponse): Promise<void> {
@@ -139,12 +164,12 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse): Promise
       return;
 
     } else if (method === 'POST') {
-      const selectedEmployeeIdHeader = req.headers['x-selected-employee-id'] as string;
+      const selectedEmployeeIdHeader = await getSelectedEmployeeId(req, authenticatedSystemUserId);
       if (!selectedEmployeeIdHeader) {
         return res.status(400).json({ message: 'x-selected-employee-id header is required (acting manager employee_number).' });
       }
 
-      // Get the UPN of the employee profile the user is acting as (from the x-selected-employee-id header)
+      // Get the UPN of the employee profile the user is acting as
       const actingManagerProfile = await client.query('SELECT user_id FROM employees WHERE employee_number = $1', [selectedEmployeeIdHeader]);
       if (actingManagerProfile.rows.length === 0 || !actingManagerProfile.rows[0].user_id) {
         return res.status(400).json({ message: `Could not find UPN for the acting manager profile (employee_number: ${selectedEmployeeIdHeader}).` });
