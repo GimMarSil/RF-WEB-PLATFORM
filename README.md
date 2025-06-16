@@ -34,12 +34,14 @@ Instalar todas as dependências (root + workspaces):
 pnpm install
 ```
 
-
-Copie `.env.example` para `.env.local` e preencha com as suas credenciais:
+Antes de qualquer build, certifique-se de copiar o arquivo de exemplo
+`.env.example` para `.env.local`:
 
 ```bash
 cp .env.example .env.local
 ```
+
+Preencha o `.env.local` resultante com as suas credenciais.
 
 Cada micro-serviço possui o seu próprio script `dev`. Não existe `pnpm run dev` na raiz.
 Para iniciar uma aplicação específica use `--filter`:
@@ -56,6 +58,9 @@ pnpm dev -F core
 | pnpm build -F @RFWebApp/ui | Build do pacote de UI |
 | pnpm run dev -F @RFWebApp/ui | Dev mode do pacote UI |
 | pnpm add -F autos @RFWebApp/ui | Adiciona o pacote UI ao microserviço |
+
+Antes de executar qualquer build, certifique-se de que correu `pnpm install`
+e copiou `.env.example` para `.env.local`.
 
 🎨 UI Partilhada: @RFWebApp/ui
 Biblioteca central de componentes estilizados com Tailwind CSS, GSAP e design Ramos Ferreira.
@@ -189,7 +194,13 @@ deploy pode ser ajustado para Vercel, Netlify ou Azure conforme necessário.
 
 Cada microserviço possui um endpoint `api/analytics` que recolhe navegação e
 erros de runtime. O hook `useAnalytics(service)` envia eventos automaticamente
-em cada mudança de rota e captura falhas globais.
+em cada mudança de rota e captura falhas globais:
+
+```tsx
+import { useAnalytics } from '@rfwebapp/lib';
+
+useAnalytics('core');
+```
 
 ✅ A fazer / melhorias futuras
 
