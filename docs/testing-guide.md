@@ -42,6 +42,12 @@ Para acompanhar em modo watch utilize `pnpm test:watch`.
 Um teste simples da biblioteca UI encontra‑se em `packages/ui/src/components/__tests__/button.test.tsx`.
 Use-o como referência para novos componentes e páginas.
 
+<<<<<<< 9footc-codex/preparar-ambiente-de-testes-e-documentar
 Cada micro-serviço também possui um teste de **smoke** em `src/__tests__/home.test.tsx`,
 útil para validação rápida do carregamento da página inicial.
 
+=======
+
+Cada micro-serviço também possui um teste de **smoke** em `src/__tests__/home.test.tsx`,
+útil para validação rápida do carregamento da página inicial.
+>>>>>>> CodexDev
