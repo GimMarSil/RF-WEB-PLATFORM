@@ -14,7 +14,7 @@ rf-web-platform/
 │ ├── dashboards/ # Relatórios e métricas
 ├── packages/
 │ └── ui/ # Biblioteca @RFWebApp/ui com Tailwind + GSAP
-├── lib/ # Hooks, autenticação, store, API
+├── lib/ # Biblioteca @rfwebapp/lib com hooks e API
 ├── middleware.ts # Bloqueia apps sensíveis se não houver funcionário
 ├── pnpm-workspace.yaml # Declaração dos workspaces
 ├── tsconfig.base.json # Configuração TypeScript comum
@@ -28,16 +28,10 @@ git clone <repo-url> rf-web-platform
 cd rf-web-platform
 ```
 
-Instalar todas as dependências (root + workspaces):
+Instalar todas as dependências e criar o ficheiro de variáveis locais:
 
 ```bash
 pnpm install
-```
-
-Antes de qualquer build, certifique-se de copiar o arquivo de exemplo
-`.env.example` para `.env.local`:
-
-```bash
 cp .env.example .env.local
 ```
 
@@ -94,7 +88,7 @@ Use o hook `usePrefs` ou o componente `ThemeToggle` para alterar entre `light`,
 - Criar nova pasta em `apps/<nome-do-app>`
 - Criar `package.json` com name, next, tailwind, etc.
 - Importar o preset Tailwind da UI partilhada
-- Adicionar `next.config.js` com `transpilePackages` para `@RFWebApp/ui`
+- Adicionar `next.config.js` com `transpilePackages` para `@RFWebApp/ui` e `@rfwebapp/lib`
 - Garantir que `pnpm-workspace.yaml` já inclui `apps/*`
 
 🧪 Testar UI localmente
