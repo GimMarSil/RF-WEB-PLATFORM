@@ -5,7 +5,8 @@
   "types": "src/index.ts",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "tokens": "ts-node ./scripts/export-tokens.js"
   },
   "dependencies": {
     "gsap": "^3.13.0",
@@ -24,6 +25,7 @@
     "lucide-react": "^0.510.0"
   },
   "devDependencies": {
-    "@types/react": "^19.1.8"
+    "@types/react": "^19.1.8",
+    "ts-node": "^10.9.1"
   }
 }
