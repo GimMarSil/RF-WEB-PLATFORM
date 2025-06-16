@@ -34,6 +34,13 @@ Instalar todas as dependências (root + workspaces):
 pnpm install
 ```
 
+
+Copie `.env.example` para `.env.local` e preencha com as suas credenciais:
+
+```bash
+cp .env.example .env.local
+```
+
 Cada micro-serviço possui o seu próprio script `dev`. Não existe `pnpm run dev` na raiz.
 Para iniciar uma aplicação específica use `--filter`:
 
