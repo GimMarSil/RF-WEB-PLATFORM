@@ -19,7 +19,11 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-      - run: pnpm build -F @RFWebApp/ui
-      - run: pnpm --filter @RFWebApp/ui publish --no-git-checks
+      - name: Set version from tag
+        run: echo "VERSION=${GITHUB_REF_NAME#ui-v}" >> $GITHUB_ENV
+      - run: pnpm version "$VERSION" -w @rfwebapp/ui --no-git-tag-version
+      - run: pnpm lint && pnpm test
+      - run: pnpm build -F @rfwebapp/ui
+      - run: pnpm --filter @rfwebapp/ui publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
