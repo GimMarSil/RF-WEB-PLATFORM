@@ -1,4 +1,4 @@
-import { Pool } from 'pg';
+import { Pool, PoolClient } from 'pg';
 
 if (!process.env.DATABASE_URL) {
   throw new Error('DATABASE_URL environment variable is not set');
@@ -25,13 +25,13 @@ pool.on('error', (err) => {
 });
 
 // Helper function to execute queries with proper error handling
-export async function executeQuery<T = any>(
+export async function executeQuery<T = unknown>(
   query: string,
-  params: any[] = [],
-  client?: any
+  params: unknown[] = [],
+  client?: PoolClient,
 ): Promise<T[]> {
   const shouldRelease = !client;
-  const queryClient = client || await pool.connect();
+  const queryClient: PoolClient = client || await pool.connect();
   
   try {
     const result = await queryClient.query(query, params);
@@ -47,10 +47,10 @@ export async function executeQuery<T = any>(
 }
 
 // Helper function to execute transactions
-export async function executeTransaction<T = any>(
-  callback: (client: any) => Promise<T>
+export async function executeTransaction<T = unknown>(
+  callback: (client: PoolClient) => Promise<T>,
 ): Promise<T> {
-  const client = await pool.connect();
+  const client: PoolClient = await pool.connect();
   
   try {
     await client.query('BEGIN');
