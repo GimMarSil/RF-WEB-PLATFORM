@@ -14,6 +14,7 @@ export * from './components/separator';
 export * from './components/switch';
 export * from './components/table';
 export * from './components/tabs';
+export * from './components/tooltip';
 export * from './components/textarea';
 export * from './components/app-card';
 export * from './components/app-shortcut-card';

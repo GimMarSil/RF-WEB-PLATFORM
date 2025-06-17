@@ -101,6 +101,27 @@ import { AppShortcutCard } from '@RFWebApp/ui';
 <AppShortcutCard title="RH" icon="👥" href="/rh" />
 ```
 
+Componentes com animações GSAP já incluídas:
+```tsx
+import { Tabs, TabsList, TabsTrigger, TabsContent, TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@RFWebApp/ui';
+
+<Tabs defaultValue="one">
+  <TabsList>
+    <TabsTrigger value="one">One</TabsTrigger>
+    <TabsTrigger value="two">Two</TabsTrigger>
+  </TabsList>
+  <TabsContent value="one">First</TabsContent>
+  <TabsContent value="two">Second</TabsContent>
+</Tabs>
+
+<TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger>Dica</TooltipTrigger>
+    <TooltipContent>Texto auxiliar</TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+```
+
 Tailwind com preset da UI:
 
 ```ts
