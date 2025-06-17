@@ -1,4 +1,5 @@
 import pool from '../../lib/dbPool';
+import { error as logError } from '../../../lib/logger';
 
 
 export default async function handler(req, res) {
@@ -18,7 +19,7 @@ export default async function handler(req, res) {
     );
     res.status(200).json(result.rows);
   } catch (error) {
-    console.error('Erro ao buscar histórico:', error);
+    logError('Erro ao buscar histórico', { error });
     res.status(500).json({ message: 'Erro ao buscar histórico', error: error.message });
   }
 }

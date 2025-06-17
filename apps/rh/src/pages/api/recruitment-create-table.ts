@@ -1,4 +1,5 @@
 import pool from '../../lib/dbPool';
+import { info, error as logError } from '../../../lib/logger';
 
 
 export default async function handler(req, res) {
@@ -131,7 +132,7 @@ export default async function handler(req, res) {
     await client.query('BEGIN'); // Start transaction
 
     await client.query(schemaManagementQueries);
-    console.log('Schema for recruitment, logs, and admission tables verified/updated.');
+    info('Schema for recruitment, logs, and admission tables verified/updated.');
 
     // Create candidates table separately
     await client.query(`
@@ -162,7 +163,7 @@ export default async function handler(req, res) {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
-    console.log('Ensured candidates table exists.');
+    info('Ensured candidates table exists.');
 
     await client.query(`
       CREATE TABLE IF NOT EXISTS candidates_log (
@@ -175,13 +176,13 @@ export default async function handler(req, res) {
         new_data JSONB NULL
       );
     `);
-    console.log('Ensured candidates_log table exists.');
+    info('Ensured candidates_log table exists.');
 
     await client.query('COMMIT'); // Commit transaction
     res.status(200).json({ success: true, message: 'All tables (recruitment, logs, admission, candidates) verified/updated successfully.' });
   } catch (error) {
     await client.query('ROLLBACK'); // Rollback transaction on error
-    console.error('Erro ao criar/atualizar tabelas:', error);
+    logError('Erro ao criar/atualizar tabelas', { error });
     res.status(500).json({ success: false, error: error.message });
   } finally {
     client.release(); // Release client
