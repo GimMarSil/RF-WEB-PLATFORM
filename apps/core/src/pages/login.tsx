@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useMsal, useIsAuthenticated } from '@azure/msal-react';
 import { Button } from '@RFWebApp/ui';
 import { loginRequest } from '../utils/authRequest';
-import { useAuthStore } from '../../../../src/store/auth';
+import { useAuthStore } from '@lib/store';
 
 export default function LoginPage() {
   const { instance } = useMsal();
