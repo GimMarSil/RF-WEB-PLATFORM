@@ -8,6 +8,7 @@ module.exports = {
     '<rootDir>/apps/inventory',
     '<rootDir>/apps/rh',
     '<rootDir>/apps/timesheet',
-    '<rootDir>/apps/vendors'
+    '<rootDir>/apps/vendors',
+    '<rootDir>/lib'
   ]
 }

@@ -60,3 +60,15 @@ render(
   </ThemeProvider>
 );
 ```
+
+## Testes de integra\u00e7\u00e3o com Postgres
+
+Alguns testes em `lib/db/__tests__` verificam a integra\u00e7\u00e3o com uma inst\u00e2ncia Postgres. Para execut\u00e1-los localmente, inicie um cont\u00eainer e defina a vari\u00e1vel `DATABASE_URL`:
+
+```bash
+docker run --name rf-postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:latest
+export DATABASE_URL=postgres://postgres:postgres@localhost:5432/postgres
+pnpm test
+```
+
+O cont\u00eainer pode ser removido ap\u00f3s os testes com `docker rm -f rf-postgres`.
