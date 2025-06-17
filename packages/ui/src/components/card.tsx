@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useImperativeHandle } from "react";
 import { gsap } from "gsap";
 import { cn } from "../lib/utils";
 
@@ -8,6 +8,7 @@ const Card = React.forwardRef<
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
   const localRef = useRef<HTMLDivElement>(null);
+  useImperativeHandle(ref, () => localRef.current);
   useEffect(() => {
     if (localRef.current) {
       gsap.fromTo(localRef.current, { opacity: 0, y: 10 }, { opacity: 1, y: 0 });

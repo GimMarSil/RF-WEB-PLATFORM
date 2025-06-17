@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useImperativeHandle } from "react";
 import { gsap } from "gsap";
 import { cn } from "../lib/utils";
 
@@ -11,6 +11,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "default", size = "default", ...props }, ref) => {
     const localRef = useRef<HTMLButtonElement>(null);
+    useImperativeHandle(ref, () => localRef.current);
     useEffect(() => {
       if (localRef.current) {
         gsap.fromTo(localRef.current, { opacity: 0, y: 10 }, { opacity: 1, y: 0 });
