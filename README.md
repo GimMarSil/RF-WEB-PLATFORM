@@ -272,3 +272,7 @@ em cada mudança de rota e captura falhas globais.
 - [ ] [Adicionar fallback de autenticação](https://github.com/GimMarSil/rf-web-platform/issues/5)
 
 Consulte [docs/roadmap.md](docs/roadmap.md) para mais detalhes sobre estas tarefas.
+
+## Licença
+
+Este projeto é distribuído sob a licença MIT. Consulte o arquivo [LICENSE](LICENSE) para detalhes.
