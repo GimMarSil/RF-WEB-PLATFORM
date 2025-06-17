@@ -36,6 +36,7 @@ cp .env.example .env.local
 ```
 
 Preencha o `.env.local` resultante com as suas credenciais.
+Em seguida, **cada aplicação Next.js precisa carregar as variáveis do seu próprio `.env.local`**. Copie (ou crie um symlink para) este ficheiro em cada pasta `apps/<nome>` para evitar erros de variáveis em falta.
 
 Cada micro-serviço possui o seu próprio script `dev`. Não existe `pnpm run dev` na raiz.
 Para iniciar uma aplicação específica use `--filter`:
@@ -53,8 +54,9 @@ pnpm dev -F core
 | pnpm run dev -F @RFWebApp/ui | Dev mode do pacote UI |
 | pnpm add -F autos @RFWebApp/ui | Adiciona o pacote UI ao microserviço |
 
-Antes de executar qualquer build, certifique-se de que correu `pnpm install`
-e copiou `.env.example` para `.env.local`.
+Antes de executar qualquer build, certifique-se de que correu `pnpm install`,
+copiou `.env.example` para `.env.local` e replicou esse ficheiro (ou um symlink)
+em cada diretório `apps/<nome>`.
 
 🎨 UI Partilhada: @RFWebApp/ui
 Biblioteca central de componentes estilizados com Tailwind CSS, GSAP e design Ramos Ferreira.
