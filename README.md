@@ -85,6 +85,10 @@ pnpm dev -F core
 | pnpm run dev -F @RFWebApp/ui | Dev mode do pacote UI |
 | pnpm add -F autos @RFWebApp/ui | Adiciona o pacote UI ao microserviço |
 | pnpm run tokens -F @RFWebApp/ui | Exporta cores e espaçamentos do Tailwind |
+| node apps/rh/src/pages/api/create-postgres-tables.js | Cria tabelas no Postgres |
+| node apps/rh/src/pages/api/syncEmployees.js | Sincroniza funcionários para Postgres |
+
+Scripts JavaScript como os acima devem ser executados com `node` a partir da raiz do projeto.
 
 🎨 UI Partilhada: @RFWebApp/ui
 Biblioteca central de componentes estilizados com Tailwind CSS, GSAP e design Ramos Ferreira.
