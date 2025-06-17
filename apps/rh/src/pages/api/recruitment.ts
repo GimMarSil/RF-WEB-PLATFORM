@@ -1,4 +1,5 @@
 import pool from '../../lib/dbPool';
+import { info, error as logError } from '../../../../lib/logger';
 
 // Test connection established by dbPool
 
@@ -37,8 +38,8 @@ export default async function handler(req, res) {
         }
         return res.status(200).json(pedido);
       } catch (error) {
-        console.error('Erro ao buscar pedido:', error);
-        console.error('Connection string:', process.env.DATABASE_URL ? 'Defined' : 'Not defined');
+        logError('Erro ao buscar pedido', { error });
+        logError('Connection string', { defined: !!process.env.DATABASE_URL });
         return res.status(500).json({ message: 'Erro ao buscar pedido', error: error.message });
       }
     }
@@ -46,26 +47,22 @@ export default async function handler(req, res) {
       return res.status(400).json({ message: 'userId é obrigatório' });
     }
     try {
-      console.log('Attempting to connect to database...');
+      info('Attempting to connect to database...');
       const result = await pool.query(
         `SELECT * FROM recruitment WHERE responsible_identification = $1 ORDER BY request_date DESC`,
         [userId]
       );
-      console.log('Query successful, found', result.rows.length, 'records');
+      info('Query successful', { count: result.rows.length });
       return res.status(200).json(result.rows);
     } catch (error) {
-      console.error('Erro ao buscar pedidos de recrutamento:', error);
-      console.error('Connection string:', process.env.DATABASE_URL ? 'Defined' : 'Not defined');
-      console.error('Error details:', {
-        code: error.code,
-        message: error.message,
-        stack: error.stack
-      });
+      logError('Erro ao buscar pedidos de recrutamento', { error });
+      logError('Connection string', { defined: !!process.env.DATABASE_URL });
+      logError('Error details', { code: error.code, message: error.message, stack: error.stack });
       return res.status(500).json({ message: 'Erro ao buscar pedidos', error: error.message });
     }
   } else if (req.method === 'POST') {
     const data = req.body;
-    console.log('POST /api/recruitment payload:', data);
+    info('POST /api/recruitment payload', data);
 
     try {
       const query = `
@@ -120,7 +117,7 @@ export default async function handler(req, res) {
         data.user_id || data.created_by || data.responsible_identification || null
       ];
       const result = await pool.query(query, values);
-      console.log('Inserted recruitment:', result.rows[0]);
+      info('Inserted recruitment', result.rows[0]);
       // Gravar log de criação
       await pool.query(
         `INSERT INTO recruitment_log (recruitment_id, action, changed_by, old_data, new_data) VALUES ($1, $2, $3, $4, $5)`,
@@ -134,7 +131,7 @@ export default async function handler(req, res) {
       );
       res.status(200).json({ success: true, id: result.rows[0].id });
     } catch (error) {
-      console.error('Erro ao gravar recrutamento:', error);
+      logError('Erro ao gravar recrutamento', { error });
       res.status(500).json({ success: false, error: error.message });
     }
   } else if (req.method === 'PUT') {
@@ -191,7 +188,7 @@ export default async function handler(req, res) {
       );
       res.status(200).json({ success: true, data: result.rows[0] });
     } catch (error) {
-      console.error('Erro ao atualizar pedido:', error);
+      logError('Erro ao atualizar pedido', { error });
       res.status(500).json({ success: false, error: error.message });
     }
   } else {

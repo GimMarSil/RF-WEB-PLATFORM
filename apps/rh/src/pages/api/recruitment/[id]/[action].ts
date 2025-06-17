@@ -1,4 +1,5 @@
 import pool from '../../../../lib/dbPool';
+import { info, error as logError } from '../../../../../lib/logger';
 // import { getToken } from 'next-auth/jwt'; // Keep if you plan to use it for more direct auth
 
 // PostgreSQL connection configuration provided by dbPool
@@ -12,7 +13,7 @@ async function checkUserAuthorization(req): Promise<{ authorized: boolean; userI
   const userNameHeader = req.headers['x-user-name'];
 
   if (!userIdHeader) {
-    console.warn("User ID not found in request for authorization.");
+    info('User ID not found in request for authorization.');
     return { authorized: false };
   }
 
@@ -26,11 +27,11 @@ async function checkUserAuthorization(req): Promise<{ authorized: boolean; userI
         return { authorized: true, userId, userName };
       }
     } catch (error) {
-      console.error("Error parsing user groups for authorization:", error);
+      logError('Error parsing user groups for authorization', { error });
       // Fall through to return not authorized
     }
   }
-  console.warn('User does not belong to the required group for approval/rejection.');
+  info('User does not belong to the required group for approval/rejection.');
   return { authorized: false, userId, userName }; // Default to not authorized
 }
 
@@ -60,7 +61,7 @@ export default async function handler(req, res) {
   let client;
   try {
     client = await pool.connect();
-    console.log('Successfully connected to PostgreSQL for action:', action);
+    info('Successfully connected to PostgreSQL for action', { action });
 
     if (action === 'approve') {
       const query = `
@@ -76,7 +77,7 @@ export default async function handler(req, res) {
       if (result.rowCount === 0) {
         return res.status(404).json({ message: 'Request not found, already processed, or no changes made.' });
       }
-      console.log(`Request ${id} approved successfully by ${performingUserName}`);
+      info(`Request ${id} approved successfully by ${performingUserName}`);
       return res.status(200).json({ success: true, message: 'Pedido aprovado com sucesso.' });
 
     } else if (action === 'reject') {
@@ -97,11 +98,11 @@ export default async function handler(req, res) {
       if (result.rowCount === 0) {
         return res.status(404).json({ message: 'Request not found, already processed, or no changes made.' });
       }
-      console.log(`Request ${id} rejected successfully by ${performingUserName}`);
+      info(`Request ${id} rejected successfully by ${performingUserName}`);
       return res.status(200).json({ success: true, message: 'Pedido rejeitado com sucesso.' });
     }
   } catch (error) {
-    console.error(`Database error during ${action} action:`, error);
+    logError(`Database error during ${action} action`, { error });
     return res.status(500).json({ message: `Error processing request: ${error.message}` });
   } finally {
     if (client) {

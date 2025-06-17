@@ -9,6 +9,7 @@
 
 // Load environment variables from .env.local
 require('../../../../../lib/loadEnv.ts');
+const { info, error } = require('../../../../../lib/logger.ts');
 const sql = require('mssql');
 const { Client } = require('pg');
 
@@ -43,11 +44,11 @@ function validateConfig() {
     throw new Error(`Missing required environment variables: ${missing.join(', ')}`);
   }
 
-  console.log('Environment variables loaded:', {
+  info('Environment variables loaded', {
     SQL_SERVER: process.env.SQL_SERVER,
     SQL_DATABASE: process.env.SQL_DATABASE,
     SQL_USER: process.env.SQL_USER,
-    DATABASE_URL: process.env.DATABASE_URL ? '***' : undefined
+    DATABASE_URL: process.env.DATABASE_URL
   });
 }
 
@@ -57,9 +58,9 @@ async function main() {
     validateConfig();
 
     // 1. Conectar ao SQL Server e buscar os dados
-    console.log('Connecting to SQL Server...');
+    info('Connecting to SQL Server...');
     await sql.connect(sqlConfig);
-    console.log('Connected to SQL Server successfully');
+    info('Connected to SQL Server successfully');
 
     const result = await sql.query(`
       SELECT 
@@ -87,15 +88,15 @@ async function main() {
     `);
 
     const employees = result.recordset;
-    console.log(`Fetched ${employees.length} employees from SQL Server.`);
+    info(`Fetched ${employees.length} employees from SQL Server.`);
 
     // 2. Conectar ao Postgres
-    console.log('Connecting to Railway Postgres...');
+    info('Connecting to Railway Postgres...');
     await pgClient.connect();
-    console.log('Connected to Railway Postgres successfully');
+    info('Connected to Railway Postgres successfully');
 
     // 3. Verificar estrutura atual da tabela
-    console.log('Checking current table structure...');
+    info('Checking current table structure...');
     const tableInfo = await pgClient.query(`
       SELECT column_name, data_type 
       FROM information_schema.columns 
@@ -104,7 +105,7 @@ async function main() {
 
     // 4. Se a tabela não existir, criar com a estrutura correta
     if (tableInfo.rows.length === 0) {
-      console.log('Table does not exist. Creating new table...');
+      info('Table does not exist. Creating new table...');
       await pgClient.query(`
         CREATE TABLE employees (
           employee_number TEXT PRIMARY KEY,
@@ -131,12 +132,12 @@ async function main() {
       `);
     } else {
       // 5. Se a tabela existir, verificar se precisa de alterações
-      console.log('Table exists. Checking if migration is needed...');
+      info('Table exists. Checking if migration is needed...');
       const hasEmployeeNumber = tableInfo.rows.some(col => col.column_name === 'employee_number');
       const hasNumber = tableInfo.rows.some(col => col.column_name === 'number');
 
       if (hasNumber && !hasEmployeeNumber) {
-        console.log('Migrating column name from "number" to "employee_number"...');
+        info('Migrating column name from "number" to "employee_number"...');
         await pgClient.query(`
           ALTER TABLE employees 
           RENAME COLUMN number TO employee_number;
@@ -145,7 +146,7 @@ async function main() {
     }
 
     // 6. Inserir/atualizar dados
-    console.log('Starting data sync...');
+    info('Starting data sync...');
     let successCount = 0;
     let errorCount = 0;
 
@@ -201,17 +202,17 @@ async function main() {
         ]);
         successCount++;
       } catch (err) {
-        console.error(`Error syncing employee ${emp.Number}:`, err);
+        error(`Error syncing employee ${emp.Number}:`, err);
         errorCount++;
       }
     }
 
-    console.log('Sync completed!');
-    console.log(`Successfully synced: ${successCount} employees`);
-    console.log(`Failed to sync: ${errorCount} employees`);
+    info('Sync completed!');
+    info(`Successfully synced: ${successCount} employees`);
+    info(`Failed to sync: ${errorCount} employees`);
 
   } catch (err) {
-    console.error('Error during sync:', err);
+    error('Error during sync:', err);
     process.exit(1);
   } finally {
     await sql.close();
