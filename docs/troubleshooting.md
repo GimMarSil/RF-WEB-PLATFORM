@@ -34,5 +34,6 @@ console.log('Azure Client ID:', process.env.NEXT_PUBLIC_AZURE_CLIENT_ID);
 Se o valor impresso for `undefined`, o problema está na localização do ficheiro
 ou na falta de reinício do servidor após editar `.env.local`.
 
+
 Se utilizar Azure B2B como fallback, certifique-se também de definir `NEXT_PUBLIC_AZURE_B2B_CLIENT_ID` e `NEXT_PUBLIC_AZURE_B2B_AUTHORITY`.
 
