@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useImperativeHandle } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 
@@ -19,6 +19,7 @@ const DialogOverlay = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
 >(({ className, ...props }, ref) => {
   const localRef = useRef<React.ElementRef<typeof DialogPrimitive.Overlay>>(null);
+  useImperativeHandle(ref, () => localRef.current);
   useEffect(() => {
     if (localRef.current) {
       gsap.fromTo(localRef.current, { opacity: 0 }, { opacity: 1 });
@@ -43,6 +44,7 @@ const DialogContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 >(({ className, children, ...props }, ref) => {
   const localRef = useRef<React.ElementRef<typeof DialogPrimitive.Content>>(null);
+  useImperativeHandle(ref, () => localRef.current);
   useEffect(() => {
     if (localRef.current) {
       gsap.fromTo(localRef.current, { opacity: 0, y: 10 }, { opacity: 1, y: 0 });
