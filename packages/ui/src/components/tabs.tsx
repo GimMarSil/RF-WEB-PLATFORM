@@ -1,5 +1,7 @@
 import * as React from "react"
+import { useEffect, useRef, useImperativeHandle } from "react"
 import * as TabsPrimitive from "@radix-ui/react-tabs"
+import { gsap } from "gsap"
 import { cn } from "../lib/utils"
 
 const Tabs = TabsPrimitive.Root
@@ -37,16 +39,32 @@ TabsTrigger.displayName = TabsPrimitive.Trigger.displayName
 const TabsContent = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.Content
-    ref={ref}
-    className={cn(
-      "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-      className
-    )}
-    {...props}
-  />
-))
+>(({ className, ...props }, ref) => {
+  const localRef = useRef<React.ElementRef<typeof TabsPrimitive.Content>>(null)
+  useImperativeHandle(ref, () => localRef.current)
+  useEffect(() => {
+    const el = localRef.current
+    if (el) {
+      gsap.fromTo(el, { opacity: 0, y: 10 }, { opacity: 1, y: 0 })
+    }
+    return () => {
+      if (el) {
+        gsap.to(el, { opacity: 0, y: -10 })
+      }
+    }
+  }, [])
+
+  return (
+    <TabsPrimitive.Content
+      ref={localRef}
+      className={cn(
+        "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+        className
+      )}
+      {...props}
+    />
+  )
+})
 TabsContent.displayName = TabsPrimitive.Content.displayName
 
 export { Tabs, TabsList, TabsTrigger, TabsContent } 
