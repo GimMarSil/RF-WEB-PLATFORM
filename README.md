@@ -225,6 +225,11 @@ apps/<nome>/
 - Todas as apps devem reutilizar o preset de Tailwind
 - Apps sensíveis devem validar presença de `employeeNumber`
 
+🔧 Development
+
+- `pnpm lint` verifica o código com ESLint.
+- `pnpm test` executa a suite de testes. Consulte [docs/testing-guide.md](docs/testing-guide.md) para mais detalhes.
+
 ⚙️ CI/CD
 
 A pipeline do GitHub Actions instala dependências, corre o lint e constrói
