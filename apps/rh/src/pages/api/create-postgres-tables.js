@@ -1,5 +1,5 @@
 // Load environment variables from .env.local
-require('../../../../../lib/loadEnv.js');
+require('../../../../../lib/loadEnv.ts');
 const { Client } = require('pg');
 
 // Configuração Postgres (Railway)
