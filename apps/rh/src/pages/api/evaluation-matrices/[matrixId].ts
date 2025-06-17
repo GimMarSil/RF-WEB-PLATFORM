@@ -139,7 +139,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse): Promise
         employee_ids // Array of employee_numbers for applicability
       } = req.body;
 
-      const validationResult = await validateMatrixInput({ title, description, valid_from, valid_to, criteria, employee_ids });
+      const validationResult = await validateMatrixInput({ title, description, valid_from, valid_to, criteria, applicable_employee_ids: employee_ids });
       if (!validationResult.success) {
         console.error("PUT /matrixId validation error:", validationResult.errors);
         res.status(400).json({ message: 'Invalid input', errors: validationResult.errors });

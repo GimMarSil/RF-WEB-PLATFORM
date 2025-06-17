@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { withAuth, AuthenticatedRequest } from '../../../middleware/auth';
 import { withErrorHandler, ValidationError, NotFoundError, AuthorizationError } from '../../../lib/errors';
-import { executeQuery, executeTransaction } from '../../../../../../../lib/db/pool';
+import { executeQuery, executeTransaction } from '../../../../../../lib/db/pool';
 import { z } from 'zod';
 import { getEmployeeDetailsByNumber } from '../../../lib/employeeDbService';
 
@@ -36,7 +36,7 @@ async function canAccessEvaluation(
     return false;
   }
 
-  const eval = evaluation[0];
+  const evaluationRecord = evaluation[0];
   
   // Admins can access all evaluations
   if (roles.includes('admin')) {
@@ -45,15 +45,15 @@ async function canAccessEvaluation(
 
   // Managers can access evaluations in their department
   if (roles.includes('manager')) {
-    const isManagerOfDepartment = await executeQuery(
+  const isManagerOfDepartment = await executeQuery(
       'SELECT 1 FROM department_managers WHERE department_id = $1 AND user_id = $2',
-      [eval.department_id, userId]
-    );
+      [evaluationRecord.department_id, userId]
+  );
     return isManagerOfDepartment.length > 0;
   }
 
   // Users can access their own evaluations
-  return eval.employee_id === userId;
+  return evaluationRecord.employee_id === userId;
 }
 
 // GET /api/evaluation/evaluations

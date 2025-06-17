@@ -1,6 +1,6 @@
 import { NextApiResponse } from 'next';
 import { withAuth, AuthenticatedRequest } from '../../../../middleware/auth';
-import { executeQuery } from '../../../../lib/db/pool';
+import { executeQuery } from '../../../../../../../lib/db/pool';
 
 interface CriterionData {
   id: number;

@@ -160,7 +160,8 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse): Promise
       return;
 
     } else if (method === 'POST') {
-      const selectedEmployeeIdHeader = await getSelectedEmployeeId(req, authenticatedSystemUserId);
+      const authenticatedSystemUserId = await getAuthenticatedSystemUserId(req);
+      const selectedEmployeeIdHeader = await getSelectedEmployeeId(req, authenticatedSystemUserId || '');
       if (!selectedEmployeeIdHeader) {
         return res.status(400).json({ message: 'x-selected-employee-id header is required (acting manager employee_number).' });
       }

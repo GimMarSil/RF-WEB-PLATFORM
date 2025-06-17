@@ -5,7 +5,7 @@ import { PublicClientApplication } from '@azure/msal-browser';
 import { authConfig } from '../config/authConfig';
 import '../styles/globals.css';
 import { ThemeProvider } from '@RFWebApp/ui';
-import { useAnalytics } from '../../../lib/useAnalytics';
+import { useAnalytics } from '../../../../lib/useAnalytics';
 import { FuncionarioProvider } from '../context/FuncionarioContext';
 import { SelectedEmployeeProvider } from '@/contexts/SelectedEmployeeContext';
 import 'react-toastify/dist/ReactToastify.css';

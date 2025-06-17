@@ -257,7 +257,7 @@ export function validateStatusTransition(
   userRole: 'employee' | 'manager' | 'admin',
   evaluationType: 'self' | 'employee'
 ): boolean {
-  const validTransitions: Record<string, string[]> = {
+  const validTransitions: Record<string, Record<string, Record<string, string[]>>> = {
     // Self-evaluation transitions
     self: {
       employee: {

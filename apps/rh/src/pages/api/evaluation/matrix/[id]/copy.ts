@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
-import { pool } from '../../../../../../../../../lib/db/pool';
+import { pool } from '../../../../../../../../lib/db/pool';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -93,7 +93,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         newValidFrom,
         newValidTo,
         session.user.email,
-        session.user.employeeId
+        (session.user as any).employeeId
       ]
     );
 
@@ -108,7 +108,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             newValidFrom,
             newValidTo,
             session.user.email,
-            session.user.employeeId
+            (session.user as any).employeeId
           ]
         );
       }

@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import * as jose from 'jose';
 
 import pool from '../../../../lib/dbPool';
 

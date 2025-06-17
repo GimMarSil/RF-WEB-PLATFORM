@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { canAccessMatrix, canManageMatrix } from '../../../../../lib/evaluation/auth';
 import { z } from 'zod';
 import * as jose from 'jose';
-import { pool, executeQuery } from '../../../../../../../../../lib/db/pool';
+import { pool, executeQuery } from '../../../../../../../../lib/db/pool';
 
 // Validate bearer token and return user ID
 async function getAuthenticatedSystemUserId(req: NextApiRequest): Promise<string | null> {

@@ -1,7 +1,7 @@
 import { NextApiResponse } from 'next';
-import { withAuth, AuthenticatedRequest } from '../../../middleware/auth';
-import { isAdmin } from '../../../../lib/auth';
-import { pool } from '../../../../../../../../lib/db/pool';
+import { withAuth, AuthenticatedRequest } from '../../../../middleware/auth';
+import { isAdmin } from '../../../../middleware/auth';
+import { pool } from '../../../../../../../lib/db/pool';
 
 async function handler(req: AuthenticatedRequest, res: NextApiResponse): Promise<void> {
   if (!req.user) {

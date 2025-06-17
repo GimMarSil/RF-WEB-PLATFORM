@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { pool, executeQuery } from '../../../../../../../../lib/db/pool';
+import { pool, executeQuery } from '../../../../../../../lib/db/pool';
 import { canManageMatrix } from '../../../../lib/evaluation/auth';
 import { validateMatrixInput } from '../../../../lib/evaluation/validation';
 
@@ -116,8 +116,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } else if (method === 'POST') {
       // --- POST /api/evaluation/matrices ---
       try {
-        const validatedData = await validateMatrixInput(req.body);
-        const { title, description, valid_from, valid_to, criteria } = validatedData;
+        const validationResult = await validateMatrixInput(req.body);
+        if (!validationResult.success) {
+          return res.status(400).json({ message: 'Invalid input', errors: validationResult.errors });
+        }
+        const { title, description, valid_from, valid_to, criteria } = req.body;
 
         await client.query('BEGIN');
 

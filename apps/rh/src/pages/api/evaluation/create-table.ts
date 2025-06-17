@@ -1,4 +1,4 @@
-import { pool as pgPool } from '../../../../../../../lib/db/pool';
+import { pool as pgPool } from '../../../../../../lib/db/pool';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {

@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
 import { PublicClientApplication, AccountInfo } from '@azure/msal-browser';
 import { ConfidentialClientApplication } from '@azure/msal-node';
-import { executeQuery } from '../../../../../lib/db/pool';
+import { executeQuery } from '../../../../lib/db/pool';
 
 // Types
 export interface AuthenticatedRequest extends NextApiRequest {
@@ -100,7 +100,7 @@ async function getGraphApiToken(): Promise<string> {
     // Cache the token
     graphTokenCache = {
       token: result.accessToken,
-      expiresAt: Date.now() + (result.expiresIn || 3600) * 1000,
+      expiresAt: (result.expiresOn?.getTime() || Date.now())
     };
 
     return result.accessToken;

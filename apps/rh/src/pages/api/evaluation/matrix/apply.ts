@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
-import { pool } from '../../../../../../../../lib/db/pool';
+import { pool } from '../../../../../../../lib/db/pool';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -72,7 +72,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       valid_from: validFrom,
       valid_to: validTo,
       status: 'active',
-      assigned_by_employee_id: session.user.employeeId,
+      assigned_by_employee_id: (session.user as any).employeeId,
       created_by_system_user_id: session.user.email
     }));
 

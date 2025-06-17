@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { canAccessMatrix, canManageMatrix } from '../../../../lib/evaluation/auth';
 import { validateMatrixInput } from '../../../../lib/evaluation/validation';
 import { withAuth, AuthenticatedRequest, isAdmin, isManager } from '../../../../middleware/auth';
-import { pool } from '../../../../../../../../lib/db/pool';
+import { pool } from '../../../../../../../lib/db/pool';
 import * as jose from 'jose';
 
 // Validate bearer token and extract system user id

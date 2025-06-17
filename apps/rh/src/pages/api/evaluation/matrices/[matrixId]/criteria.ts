@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import * as jose from 'jose';
-import { pool, executeQuery } from '../../../../../../../../../lib/db/pool';
+import { pool, executeQuery } from '../../../../../../../../lib/db/pool';
 import { userHasAdminRightsToManageCriteria } from '../../../../../lib/authz';
 
 // Validate bearer token using Azure AD and return the user ID
