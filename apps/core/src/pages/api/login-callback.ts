@@ -5,7 +5,7 @@ import { authConfig } from '../../authConfig';
 const msalInstance = new PublicClientApplication({
   auth: {
     clientId: authConfig.clientId,
-    authority: `https://login.microsoftonline.com/${authConfig.tenantId}`,
+    authority: authConfig.authority,
     redirectUri: authConfig.redirectUri
   }
 });
