@@ -20,9 +20,15 @@ export default [
       '@typescript-eslint': eslintPluginTs,
       react: reactPlugin
     },
+    settings: {
+      react: {
+        version: 'detect'
+      }
+    },
     rules: {
       ...reactPlugin.configs.recommended.rules,
-      ...eslintPluginTs.configs.recommended.rules
+      ...eslintPluginTs.configs.recommended.rules,
+      'react/react-in-jsx-scope': 'off'
     }
   }
 ];
