@@ -255,6 +255,7 @@ apps/<nome>/
 
 - `pnpm lint` verifica o código com ESLint.
 - `pnpm test` executa a suite de testes. Consulte [docs/testing-guide.md](docs/testing-guide.md) para mais detalhes.
+- Para erros comuns de configuração veja [docs/troubleshooting.md](docs/troubleshooting.md).
 
 ⚙️ CI/CD
 
