@@ -1,7 +1,16 @@
 /**
  * @jest-environment node
  */
-import { executeQuery, executeTransaction } from '../pool'
+const hasDb = !!process.env.DATABASE_URL
+let executeQuery: typeof import('../pool').executeQuery
+let executeTransaction: typeof import('../pool').executeTransaction
+if (hasDb) {
+  const mod = require('../pool')
+  executeQuery = mod.executeQuery
+  executeTransaction = mod.executeTransaction
+}
+
+const dbDescribe = hasDb ? describe : describe.skip
 
 const TABLE = 'integration_test_numbers'
 
@@ -14,14 +23,14 @@ afterAll(async () => {
   await executeQuery(`DROP TABLE IF EXISTS ${TABLE}`)
 })
 
-describe('executeQuery', () => {
+dbDescribe('executeQuery', () => {
   it('runs a simple select', async () => {
     const result = await executeQuery<{ result: number }>('SELECT 1 + 1 AS result')
     expect(result[0].result).toBe(2)
   })
 })
 
-describe('executeTransaction', () => {
+dbDescribe('executeTransaction', () => {
   beforeEach(async () => {
     await executeQuery(`TRUNCATE TABLE ${TABLE}`)
   })

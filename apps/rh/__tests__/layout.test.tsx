@@ -5,7 +5,7 @@ jest.mock('@azure/msal-react', () => ({
   useMsal: () => ({ instance: { getActiveAccount: jest.fn(), loginRedirect: jest.fn() } }),
   useIsAuthenticated: () => false
 }), { virtual: true })
-jest.mock('@azure/msal-browser', () => ({ PublicClientApplication: jest.fn() }), { virtual: true })
+jest.mock('@azure/msal-browser', () => ({ PublicClientApplication: jest.fn().mockImplementation(() => ({ initialize: jest.fn().mockResolvedValue(undefined) })) }), { virtual: true })
 
 jest.mock('../../../lib/useAnalytics', () => ({ useAnalytics: () => {} }), { virtual: true })
 jest.mock('next/router', () => ({ useRouter: () => ({ asPath: '/', events: { on: jest.fn(), off: jest.fn() } }) }))
