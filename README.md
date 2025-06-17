@@ -256,6 +256,11 @@ apps/<nome>/
 - `pnpm lint` verifica o código com ESLint.
 - `pnpm test` executa a suite de testes. Consulte [docs/testing-guide.md](docs/testing-guide.md) para mais detalhes.
 - Para erros comuns de configuração veja [docs/troubleshooting.md](docs/troubleshooting.md).
+<<<<<<< codex/corrigir-erro-aadsts900144-na-sessão
+- Lembre-se de correr `pnpm dev -F <app>` a partir da **raiz** sempre que alterar `.env.local`,
+  caso contrário o Next.js não carrega as variáveis.
+=======
+>>>>>>> CodexDev
 
 ⚙️ CI/CD
 
