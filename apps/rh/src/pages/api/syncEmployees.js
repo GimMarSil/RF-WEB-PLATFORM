@@ -8,7 +8,7 @@
  *************************************************************/
 
 // Load environment variables from .env.local
-require('../../../../../lib/loadEnv.ts');
+require('../../../../../lib/loadEnv.js');
 const { info, error } = require('../../../../../lib/logger.ts');
 const sql = require('mssql');
 const { Client } = require('pg');
