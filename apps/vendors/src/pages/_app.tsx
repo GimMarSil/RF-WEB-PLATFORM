@@ -4,7 +4,7 @@ import { MsalProvider } from '@azure/msal-react';
 import { PublicClientApplication } from '@azure/msal-browser';
 import { authConfig } from '../authConfig';
 import '../styles/globals.css';
-import { ThemeProvider } from '@RFWebApp/ui';
+import { ThemeProvider, Layout } from '@RFWebApp/ui';
 import { useAnalytics } from '../../../lib/useAnalytics';
 
 const msalInstance = new PublicClientApplication({
@@ -20,7 +20,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider>
       <MsalProvider instance={msalInstance}>
-        <Component {...pageProps} />
+        <Layout navItems={[{ href: '/vendors', label: 'Home' }]}>
+          <Component {...pageProps} />
+        </Layout>
       </MsalProvider>
     </ThemeProvider>
   );

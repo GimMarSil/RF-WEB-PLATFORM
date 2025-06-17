@@ -4,7 +4,6 @@ import { useIsAuthenticated, useMsal } from '@azure/msal-react';
 import {
   Card,
   Button,
-  Layout,
   Modal,
   ModalContent,
   ModalHeader,
@@ -69,8 +68,7 @@ export default function LandingPage() {
   };
 
   return (
-    <Layout navItems={[{ href: '/core', label: 'Home' }]}>
-      <div className="space-y-6">
+    <div className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {apps.map((app) => (
             <a key={app.href} href={app.href} className="block">
@@ -104,6 +102,5 @@ export default function LandingPage() {
           </ModalContent>
         </Modal>
       </div>
-    </Layout>
-  );
+    );
 }
