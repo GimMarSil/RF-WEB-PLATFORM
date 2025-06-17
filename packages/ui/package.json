@@ -15,7 +15,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "tokens": "ts-node ./scripts/export-tokens.js"
+    "tokens": "node ./scripts/export-tokens.js"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.10",
