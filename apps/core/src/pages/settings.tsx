@@ -19,7 +19,7 @@ import {
   SelectValue,
   usePrefs
 } from '@RFWebApp/ui';
-import { useAuthStore } from '../../../../src/store/auth';
+import { useAuthStore } from '@lib/store';
 
 interface Funcionario {
   id: string;
