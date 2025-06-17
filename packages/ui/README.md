@@ -1,5 +1,20 @@
 # @RFWebApp/ui
 
+<<<<<<< codex/add-token-export-and-github-action
+Biblioteca de componentes React usada nos micro-serviços da plataforma. Inclui configuracao partilhada do Tailwind CSS e animações com GSAP.
+
+## Geração de tokens
+
+Para exportar as cores e espaçamentos definidos no Tailwind execute:
+
+```bash
+pnpm run tokens -F @rfwebapp/ui
+```
+
+Serão criados os ficheiros `tokens.json` e `tokens-figma.json` na pasta do pacote.
+
+O ficheiro `tokens-figma.json` pode ser importado no Figma (plugin Token Studio) para atualizar as variáveis de design utilizadas nas maquetes.
+=======
 Biblioteca de componentes React compartilhada para as aplicações do monorepo.
 
 ## Processo de release
@@ -13,3 +28,4 @@ Biblioteca de componentes React compartilhada para as aplicações do monorepo.
    - Buildar e publicar o pacote no registro definido em `publishConfig.registry`.
 
 Não é necessário publicar manualmente: apenas envie a tag e aguarde o workflow.
+>>>>>>> CodexDev
