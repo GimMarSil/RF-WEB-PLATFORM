@@ -64,6 +64,7 @@ Após copiar o ficheiro de exemplo, preencha cada entrada conforme a descrição
 | `AZURE_OPENAI_DEPLOYMENT` | Nome do deployment no Azure OpenAI |
 | `AZURE_OPENAI_API_VERSION` | Versão da API Azure OpenAI |
 | `AZURE_OPENAI_API_KEY` | Chave de acesso ao Azure OpenAI |
+| `ANALYTICS_DISABLED` | Defina como `true` para desligar a recolha de analytics |
 
 Credenciais Azure AD podem ser obtidas no portal do Azure em **Azure Active Directory → Registos de Aplicações**. Lá encontra o `Application (client) ID`, o `Directory (tenant) ID` e pode gerar o `client secret` em **Certificates & secrets**.
 Os detalhes de ligação à base de dados (`SQL_SERVER`, `SQL_USER`, `SQL_PASSWORD`, `SQL_DATABASE`) são fornecidos pela equipa de infraestruturas ou pela configuração da instância SQL existente.

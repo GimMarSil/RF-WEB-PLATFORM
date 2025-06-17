@@ -10,6 +10,12 @@ export async function logEvent(
   event: string,
   data: Record<string, unknown> = {}
 ) {
+  const disabled =
+    process.env.ANALYTICS_DISABLED === 'true' ||
+    process.env.NEXT_PUBLIC_ANALYTICS_DISABLED === 'true';
+  if (disabled) {
+    return;
+  }
   const payload: LogPayload = { service, event, data, timestamp: Date.now() };
   try {
     await fetch('/api/analytics', {
