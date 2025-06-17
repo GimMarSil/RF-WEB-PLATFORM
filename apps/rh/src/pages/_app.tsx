@@ -4,7 +4,7 @@ import { MsalProvider } from '@azure/msal-react';
 import { PublicClientApplication } from '@azure/msal-browser';
 import { authConfig } from '../config/authConfig';
 import '../styles/globals.css';
-import { ThemeProvider } from '@RFWebApp/ui';
+import { ThemeProvider, Layout } from '@RFWebApp/ui';
 import { useAnalytics } from '../../../lib/useAnalytics';
 import { FuncionarioProvider } from '../context/FuncionarioContext';
 import { SelectedEmployeeProvider } from '@/contexts/SelectedEmployeeContext';
@@ -26,7 +26,16 @@ function MyApp({ Component, pageProps }: AppProps) {
       <MsalProvider instance={msalInstance}>
         <SelectedEmployeeProvider>
           <FuncionarioProvider>
-            <Component {...pageProps} />
+            <Layout
+              navItems={[
+                { href: '/rh/landing', label: 'Home' },
+                { href: '/rh/perfil', label: 'Perfil' },
+                { href: '/rh/recruitment', label: 'Recrutamento' },
+                { href: '/rh/settings', label: 'Settings' }
+              ]}
+            >
+              <Component {...pageProps} />
+            </Layout>
             <ToastContainer position="top-right" autoClose={5000} />
           </FuncionarioProvider>
         </SelectedEmployeeProvider>
