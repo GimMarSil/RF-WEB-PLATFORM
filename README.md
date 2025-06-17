@@ -144,6 +144,7 @@ SELECT Number, Name FROM Employee WHERE UserId = @upn AND Active = 1
   title="RH"
   description="Gestão de recursos humanos"
   href="/rh"
+  icon={Users}
   locked={!employeeNumber}
 />
 ```
