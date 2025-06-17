@@ -22,7 +22,16 @@ jobs:
           node-version: 18
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
+      - name: Cache Jest results
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules/.cache/jest
+          key: ${{ runner.os }}-jest-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-jest-
       - run: pnpm lint
+      - run: pnpm test
       - run: pnpm --filter ${{ matrix.app }} build
       - name: Deploy
         run: echo "Deploy ${{ matrix.app }} to your hosting platform"
