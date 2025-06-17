@@ -14,9 +14,11 @@ const msalInstance = new PublicClientApplication({
     redirectUri: authConfig.redirectUri
   }
 });
+msalInstance.initialize();
 
 function MyApp({ Component, pageProps }: AppProps) {
   useAnalytics('autos');
+
   return (
     <ThemeProvider>
       <MsalProvider instance={msalInstance}>
