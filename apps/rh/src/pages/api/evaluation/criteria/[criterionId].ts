@@ -2,6 +2,7 @@ import { NextApiResponse } from 'next';
 import { Pool } from 'pg';
 import { withAuth, AuthenticatedRequest, isAdmin, isManager } from '../../../../middleware/auth';
 import { validateMatrixInput } from '../../../../lib/evaluation/validation';
+import { getActiveEmployeeNumber } from '../../../../lib/activeEmployee';
 
 // TODO: Ideally, use a shared DB pool module
 const pool = new Pool({
@@ -19,16 +20,12 @@ async function getAuthenticatedSystemUserId(req: AuthenticatedRequest): Promise<
 
 // Helper to get the selected Employee ID (e.g., from a custom header or session)
 async function getSelectedEmployeeId(req: AuthenticatedRequest): Promise<string | null> {
-  // TODO: Implement logic to retrieve selected employee ID.
-  // This ID represents the employee profile the user is currently acting as.
-  // It's used for role-based access and business logic (e.g., manager_id, employee_id).
-  const selectedEmployeeId = req.headers['x-selected-employee-id'] as string;
+  const selectedEmployeeId = getActiveEmployeeNumber(req);
   if (!selectedEmployeeId) {
-    console.warn('X-Selected-Employee-ID header not found. Operations may fail authorization.');
+    console.warn('X-Selected-Employee-ID header or employeeNumber cookie not found.');
     return null;
   }
-  console.log(`Retrieved selectedEmployeeId: ${selectedEmployeeId} from header for criterion operations.`);
-  return selectedEmployeeId; 
+  return selectedEmployeeId;
 }
 
 async function handler(req: AuthenticatedRequest, res: NextApiResponse): Promise<void> {
