@@ -88,6 +88,15 @@ export default {
 };
 ```
 
+📙 Tokens de design
+Os tokens de cor, espaçamento e tipografia vivem em `packages/ui/tokens`.
+Para exportar ficheiros compatíveis com o Figma corra:
+
+```bash
+pnpm run build:tokens
+```
+O resultado ficará em `packages/ui/tokens/dist/figma-tokens.json`.
+
 🌗 Sistema de temas
 Envvolva a aplicação com `ThemeProvider` e importe `@RFWebApp/ui/styles/themes.css`.
 Use o hook `usePrefs` ou o componente `ThemeToggle` para alterar entre `light`,
@@ -169,6 +178,7 @@ SELECT Number, Name FROM Employee WHERE UserId = @upn AND Active = 1
 - clsx – gestão de classes condicionais
 - Zustand – estado global (funcionário ativo)
 - MSAL – autenticação Microsoft 365
+- Abstração de autenticação selecionável via `NEXT_PUBLIC_AUTH_PROVIDER`
 - SQL Server – verificação de associação a funcionário
 
 🛠️ Desenvolvimento
@@ -213,4 +223,4 @@ useAnalytics('core');
 - [ ] Criar layout base com Navbar lateral e topbar
 - [ ] Criar design tokens exportáveis para Figma
 - [ ] Publicar `@RFWebApp/ui` em NPM privado (GitHub Packages)
-- [ ] Criar fallback de autenticação para outros provedores (ex: Azure B2B)
+- [x] Suporte a múltiplos provedores de autenticação (Azure B2B, etc.)

@@ -1,0 +1,15 @@
+{
+  "source": ["packages/ui/tokens/properties/**/*.json"],
+  "platforms": {
+    "figma": {
+      "transformGroup": "js",
+      "buildPath": "packages/ui/tokens/dist/",
+      "files": [
+        {
+          "destination": "figma-tokens.json",
+          "format": "json/nested"
+        }
+      ]
+    }
+  }
+}
