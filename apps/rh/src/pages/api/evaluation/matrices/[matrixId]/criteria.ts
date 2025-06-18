@@ -1,5 +1,7 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiResponse } from 'next';
 import { Pool } from 'pg';
+import { withAuth, AuthenticatedRequest } from '../../../../../middleware/auth';
+import { withErrorHandler } from '../../../../../lib/errors';
 
 // TODO: Ideally, use a shared DB pool module
 const pool = new Pool({
@@ -7,23 +9,8 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }, // Adjust based on your DB hosting requirements
 });
 
-// Renamed: Helper to get the actual logged-in system user ID (e.g., from MSAL)
-async function getAuthenticatedSystemUserId(req: NextApiRequest): Promise<string | null> {
-  // TODO: Replace with your ACTUAL MSAL token validation and user ID extraction.
-  console.warn('MATRIX_CRITERIA_API: Using placeholder system User ID. Integrate actual MSAL authentication.');
-  return 'logged-in-system-user-via-msal'; 
-}
 
-// Helper to get the Employee ID the user is currently acting as (selected on landing)
-function getSelectedEmployeeId(req: NextApiRequest): string | null {
-    const fromHeader = req.headers['x-selected-employee-id'];
-    if (fromHeader) return Array.isArray(fromHeader) ? fromHeader[0] : fromHeader;
-    if (req.body && req.body.actingAsEmployeeId) return req.body.actingAsEmployeeId; 
-    console.warn('MATRIX_CRITERIA_API: selectedEmployeeId not found in headers (X-Selected-Employee-ID) or body (actingAsEmployeeId).');
-    return null; 
-}
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
   const { method } = req;
   const { matrixId: queryMatrixId } = req.query; // matrixId from the path
 
@@ -31,24 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ message: 'Valid matrixId must be provided in the path.' });
   }
   const matrixId = queryMatrixId as string;
-
-  let authenticatedSystemUserId: string | null = null;
-  try {
-    authenticatedSystemUserId = await getAuthenticatedSystemUserId(req);
-    if (!authenticatedSystemUserId) {
-      return res.status(401).json({ message: 'Unauthorized: System User ID not available.' });
-    }
-  } catch (authError) {
-    console.error('MATRIX_CRITERIA_API: Authentication error:', authError);
-    return res.status(500).json({ message: 'Authentication failed.' });
-  }
-
-  // For managing criteria, authorization should check if the user (via selectedEmployeeId or system user role) has RH/Admin rights.
-  const selectedEmployeeId = getSelectedEmployeeId(req);
-  // TODO: Implement role-based authorization for managing criteria (typically RH/Admin).
-  // if (!userHasAdminRightsToManageCriteria(selectedEmployeeId, authenticatedSystemUserId)) {
-  //    return res.status(403).json({ message: 'Forbidden: User does not have rights to manage criteria for this matrix.'});
-  // }
+  const authenticatedSystemUserId = req.user!.id;
 
   const client = await pool.connect();
   try {
@@ -118,4 +88,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } finally {
     if (client) client.release();
   }
-} 
+}
+
+export default withErrorHandler(withAuth(handler));

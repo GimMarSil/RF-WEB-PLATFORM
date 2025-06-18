@@ -1,29 +1,15 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiResponse } from 'next';
 import { Pool } from 'pg';
 import { canAccessMatrix, canManageMatrix } from '../../../../../lib/evaluation/auth';
 import { z } from 'zod';
+import { withAuth, AuthenticatedRequest } from '../../../../../middleware/auth';
+import { withErrorHandler } from '../../../../../lib/errors';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false },
 });
 
-// Helper to get authenticated user ID
-async function getAuthenticatedSystemUserId(req: NextApiRequest): Promise<string | null> {
-  // TODO: Replace with actual MSAL or equivalent authentication logic
-  console.warn('Using placeholder system user ID for audit logs in matrices API. Integrate actual authentication.');
-  return 'system-placeholder-user-id';
-}
-
-// Helper to get the selected Employee ID
-async function getSelectedEmployeeId(req: NextApiRequest): Promise<string | null> {
-  const selectedEmployeeId = req.headers['x-selected-employee-id'] as string;
-  if (!selectedEmployeeId) {
-    console.warn('X-Selected-Employee-ID header not found for matrices API.');
-    return null;
-  }
-  return selectedEmployeeId;
-}
 
 // Validation schemas
 const applicabilitySchema = z.object({
@@ -32,7 +18,7 @@ const applicabilitySchema = z.object({
   validTo: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Valid to date must be in YYYY-MM-DD format')
 });
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
   const { method } = req;
   const { matrixId } = req.query;
 
@@ -40,22 +26,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ message: 'Invalid matrix ID' });
   }
 
-  let authenticatedSystemUserId: string | null = null;
-  let selectedEmployeeId: string | null = null;
-
-  try {
-    authenticatedSystemUserId = await getAuthenticatedSystemUserId(req);
-    if (!authenticatedSystemUserId) {
-      return res.status(401).json({ message: 'Unauthorized: Authenticated system user ID not available.' });
-    }
-
-    selectedEmployeeId = await getSelectedEmployeeId(req);
-    if (!selectedEmployeeId && method !== 'GET') {
-      return res.status(403).json({ message: 'Forbidden: Selected Employee ID required for matrix operations.' });
-    }
-  } catch (authError) {
-    console.error('Authentication error in matrices API:', authError);
-    return res.status(500).json({ message: 'Authentication failed.' });
+  const authenticatedSystemUserId = req.user!.id;
+  const selectedEmployeeId = req.headers['x-selected-employee-id'] as string;
+  if (!selectedEmployeeId && method !== 'GET') {
+    return res.status(403).json({ message: 'Forbidden: Selected Employee ID required for matrix operations.' });
   }
 
   const client = await pool.connect();
@@ -189,4 +163,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } finally {
     client.release();
   }
-} 
+}
+
+export default withErrorHandler(withAuth(handler));

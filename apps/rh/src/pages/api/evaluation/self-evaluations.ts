@@ -11,12 +11,6 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }, // Adjust based on your DB hosting requirements
 });
 
-// Helper to get authenticated user ID (replace with your actual auth logic)
-async function getAuthenticatedSystemUserId(req: NextApiRequest): Promise<string | null> {
-  // TODO: Replace with actual MSAL or equivalent authentication logic
-  console.warn('Using placeholder system user ID for audit logs in self-evaluations API. Integrate actual authentication.');
-  return 'system-placeholder-user-id'; // Example: MSAL Object ID
-}
 
 // Helper to get the selected Employee ID (e.g., from a custom header or session)
 async function getSelectedEmployeeId(req: NextApiRequest): Promise<string | null> {

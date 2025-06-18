@@ -2,6 +2,7 @@ import { NextApiResponse } from 'next';
 import { Pool } from 'pg';
 import { withAuth, AuthenticatedRequest, isAdmin, isManager } from '../../../../middleware/auth';
 import { validateMatrixInput } from '../../../../lib/evaluation/validation';
+import { withErrorHandler } from '../../../../lib/errors';
 
 // TODO: Ideally, use a shared DB pool module
 const pool = new Pool({
@@ -9,27 +10,6 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }, // Adjust based on your DB hosting requirements
 });
 
-// Helper to get authenticated user ID (replace with your actual auth logic)
-async function getAuthenticatedSystemUserId(req: AuthenticatedRequest): Promise<string | null> {
-  // TODO: Replace with actual MSAL or equivalent authentication logic
-  // This ID is the system-wide user identifier, used for audit trails (e.g., created_by_user_id)
-  console.warn('Using placeholder system user ID for audit logs in individual criterion API. Integrate actual authentication.');
-  return 'system-placeholder-user-id'; // Example: MSAL Object ID
-}
-
-// Helper to get the selected Employee ID (e.g., from a custom header or session)
-async function getSelectedEmployeeId(req: AuthenticatedRequest): Promise<string | null> {
-  // TODO: Implement logic to retrieve selected employee ID.
-  // This ID represents the employee profile the user is currently acting as.
-  // It's used for role-based access and business logic (e.g., manager_id, employee_id).
-  const selectedEmployeeId = req.headers['x-selected-employee-id'] as string;
-  if (!selectedEmployeeId) {
-    console.warn('X-Selected-Employee-ID header not found. Operations may fail authorization.');
-    return null;
-  }
-  console.log(`Retrieved selectedEmployeeId: ${selectedEmployeeId} from header for criterion operations.`);
-  return selectedEmployeeId; 
-}
 
 async function handler(req: AuthenticatedRequest, res: NextApiResponse): Promise<void> {
   const { method } = req;
@@ -284,4 +264,4 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse): Promise
   }
 }
 
-export default withAuth(handler); 
+export default withErrorHandler(withAuth(handler));

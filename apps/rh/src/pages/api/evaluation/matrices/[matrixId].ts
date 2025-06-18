@@ -1,30 +1,15 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiResponse } from 'next';
 import { Pool } from 'pg';
 import { canAccessMatrix, canManageMatrix } from '../../../../lib/evaluation/auth';
 import { validateMatrixInput } from '../../../../lib/evaluation/validation';
 import { withAuth, AuthenticatedRequest, isAdmin, isManager } from '../../../../middleware/auth';
+import { withErrorHandler } from '../../../../lib/errors';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false },
 });
 
-// Helper to get authenticated user ID
-async function getAuthenticatedSystemUserId(req: NextApiRequest): Promise<string | null> {
-  // TODO: Replace with actual MSAL or equivalent authentication logic
-  console.warn('Using placeholder system user ID for audit logs in matrices API. Integrate actual authentication.');
-  return 'system-placeholder-user-id';
-}
-
-// Helper to get the selected Employee ID
-async function getSelectedEmployeeId(req: NextApiRequest): Promise<string | null> {
-  const selectedEmployeeId = req.headers['x-selected-employee-id'] as string;
-  if (!selectedEmployeeId) {
-    console.warn('X-Selected-Employee-ID header not found for matrices API.');
-    return null;
-  }
-  return selectedEmployeeId;
-}
 
 async function handler(req: AuthenticatedRequest, res: NextApiResponse): Promise<void> {
   const { method } = req;
@@ -273,4 +258,4 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse): Promise
   }
 }
 
-export default withAuth(handler); 
+export default withErrorHandler(withAuth(handler));
