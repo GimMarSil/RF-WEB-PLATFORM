@@ -1,10 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Pool } from 'pg';
+import { pool } from '../../../../../lib/db/pool';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-});
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {

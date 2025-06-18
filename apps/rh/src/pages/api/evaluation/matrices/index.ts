@@ -1,12 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Pool } from 'pg';
+import { pool } from '../../../../../lib/db/pool';
 import { canManageMatrix } from '../../../../lib/evaluation/auth';
 import { validateMatrixInput } from '../../../../lib/evaluation/validation';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-});
 
 // Helper to get authenticated user ID
 async function getAuthenticatedSystemUserId(req: NextApiRequest): Promise<string | null> {

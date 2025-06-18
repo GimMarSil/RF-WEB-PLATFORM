@@ -1,11 +1,7 @@
-import { Pool } from 'pg';
+import { pool } from '../lib/db/pool';
 import fs from 'fs';
 import path from 'path';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-});
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {

@@ -1,13 +1,9 @@
 import { NextApiResponse } from 'next';
-import { Pool } from 'pg';
+import { pool } from '../../../../../lib/db/pool';
 import { withAuth, AuthenticatedRequest, isAdmin, isManager } from '../../../../middleware/auth';
 import { validateMatrixInput } from '../../../../lib/evaluation/validation';
 
-// TODO: Ideally, use a shared DB pool module
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }, // Adjust based on your DB hosting requirements
-});
+// Shared Postgres pool
 
 // Helper to get authenticated user ID (replace with your actual auth logic)
 async function getAuthenticatedSystemUserId(req: AuthenticatedRequest): Promise<string | null> {

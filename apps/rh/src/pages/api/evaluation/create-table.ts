@@ -1,9 +1,5 @@
-import { Pool } from 'pg';
+import { pool } from '../../../../lib/db/pool';
 
-const pgPool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-});
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -13,7 +9,7 @@ export default async function handler(req, res) {
   console.log('Starting table creation...');
   console.log('Database URL:', process.env.DATABASE_URL ? 'Present' : 'Missing');
 
-  const client = await pgPool.connect();
+  const client = await pool.connect();
   try {
     console.log('Connected to database successfully');
     await client.query('BEGIN');

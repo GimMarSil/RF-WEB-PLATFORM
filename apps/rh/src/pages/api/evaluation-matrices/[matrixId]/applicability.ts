@@ -1,10 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Pool } from 'pg';
+import { pool } from '../../../../../lib/db/pool';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-});
 
 async function getAuthenticatedSystemUserId(req: NextApiRequest): Promise<string | null> {
   // TODO: Replace with actual MSAL or equivalent authentication logic

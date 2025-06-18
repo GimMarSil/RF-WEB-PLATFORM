@@ -1,11 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Pool } from 'pg';
+import { pool } from '../../../../../../lib/db/pool';
 
-// TODO: Ideally, use a shared DB pool module
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }, // Adjust based on your DB hosting requirements
-});
+// Shared Postgres pool
 
 // Renamed: Helper to get the actual logged-in system user ID (e.g., from MSAL)
 async function getAuthenticatedSystemUserId(req: NextApiRequest): Promise<string | null> {

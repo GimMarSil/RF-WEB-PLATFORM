@@ -1,12 +1,8 @@
 import { NextApiResponse } from 'next';
 import { withAuth, AuthenticatedRequest } from '../../../middleware/auth';
 import { isAdmin } from '../../../../lib/auth';
-import { Pool } from 'pg';
+import { pool } from '../../../../../lib/db/pool';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-});
 
 async function handler(req: AuthenticatedRequest, res: NextApiResponse): Promise<void> {
   if (!req.user) {

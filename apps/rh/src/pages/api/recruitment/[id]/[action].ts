@@ -1,11 +1,7 @@
-import { Pool } from 'pg'; // Assuming you have 'pg' installed
+import { pool } from '../../../../lib/db/pool'; // Shared Postgres pool
 // import { getToken } from 'next-auth/jwt'; // Keep if you plan to use it for more direct auth
 
 // PostgreSQL connection configuration using the DATABASE_URL
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false, // Adjust SSL for Railway if needed
-});
 
 // Define your approver group ID
 const APPROVER_GROUP_ID = "a837ee80-f103-4d51-9869-e3b4da6bdeda"; // Example RH Group ID

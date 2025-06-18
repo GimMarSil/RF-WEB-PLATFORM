@@ -1,14 +1,6 @@
-import { Pool } from 'pg';
+import { pool } from '../../lib/db/pool';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-});
 
-pool.on('error', (err) => {
-  console.error('Unexpected error on idle client', err);
-  process.exit(-1);
-});
 
 // Define your RH group ID (ensure this is consistent across your app)
 const RH_GROUP_ID = 'a837ee80-f103-4d51-9869-e3b4da6bdeda';
