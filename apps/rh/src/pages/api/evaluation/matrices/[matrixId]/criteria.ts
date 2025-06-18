@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Pool } from 'pg';
+import { getUserRoleInfo } from '../../../../../lib/evaluation/auth';
 
 // TODO: Ideally, use a shared DB pool module
 const pool = new Pool({
@@ -45,10 +46,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // For managing criteria, authorization should check if the user (via selectedEmployeeId or system user role) has RH/Admin rights.
   const selectedEmployeeId = getSelectedEmployeeId(req);
-  // TODO: Implement role-based authorization for managing criteria (typically RH/Admin).
-  // if (!userHasAdminRightsToManageCriteria(selectedEmployeeId, authenticatedSystemUserId)) {
-  //    return res.status(403).json({ message: 'Forbidden: User does not have rights to manage criteria for this matrix.'});
-  // }
+  if (method !== 'GET') {
+    try {
+      if (!selectedEmployeeId) {
+        return res.status(403).json({ message: 'Forbidden: Selected employee is required.' });
+      }
+      const roleInfo = await getUserRoleInfo(selectedEmployeeId);
+      const role = roleInfo?.role;
+      if (role !== 'admin' && role !== 'hr') {
+        return res.status(403).json({ message: 'Forbidden: User does not have rights to manage criteria for this matrix.' });
+      }
+    } catch (authError) {
+      console.error('MATRIX_CRITERIA_API: Authorization error:', authError);
+      return res.status(500).json({ message: 'Failed to verify user roles.' });
+    }
+  }
 
   const client = await pool.connect();
   try {
