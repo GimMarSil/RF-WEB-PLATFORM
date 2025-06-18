@@ -82,6 +82,15 @@ export default {
 };
 ```
 
+📙 Tokens de design
+Os tokens de cor, espaçamento e tipografia vivem em `packages/ui/tokens`.
+Para exportar ficheiros compatíveis com o Figma corra:
+
+```bash
+pnpm run build:tokens
+```
+O resultado ficará em `packages/ui/tokens/dist/figma-tokens.json`.
+
 🌗 Sistema de temas
 Envvolva a aplicação com `ThemeProvider` e importe `@RFWebApp/ui/styles/themes.css`.
 Use o hook `usePrefs` ou o componente `ThemeToggle` para alterar entre `light`,

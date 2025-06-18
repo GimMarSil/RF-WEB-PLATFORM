@@ -1,0 +1,16 @@
+{
+  "color": {
+    "brand": { "value": "#933037" },
+    "brand-light": { "value": "#F3E9E8" },
+    "brand-gray": { "value": "#878986" },
+    "brand-dark": { "value": "#363B38" },
+    "surface": { "value": "#F9FAFB" },
+    "border": { "value": "#E5E7EB" },
+    "success": { "value": "#3EB489" },
+    "info": { "value": "#1E90FF" },
+    "warning": { "value": "#FACC15" },
+    "error": { "value": "#EF4444" },
+    "muted": { "value": "#6B7280" },
+    "text": { "value": "#1F2937" }
+  }
+}
