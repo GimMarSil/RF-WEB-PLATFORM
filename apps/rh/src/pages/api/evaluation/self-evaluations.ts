@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import { withAuth, AuthenticatedRequest, getUserManager } from '../../../middleware/auth';
 import { withErrorHandler, ValidationError, NotFoundError, AuthorizationError } from '../../../lib/errors';
 import { executeQuery, executeTransaction } from '../../../lib/db/pool';
+import { getActiveEmployeeNumber } from '../../../lib/activeEmployee';
 import { z } from 'zod';
 
 // TODO: Ideally, use a shared DB pool module
@@ -20,14 +21,12 @@ async function getAuthenticatedSystemUserId(req: NextApiRequest): Promise<string
 
 // Helper to get the selected Employee ID (e.g., from a custom header or session)
 async function getSelectedEmployeeId(req: NextApiRequest): Promise<string | null> {
-  // TODO: Implement logic to retrieve selected employee ID.
-  const selectedEmployeeId = req.headers['x-selected-employee-id'] as string;
+  const selectedEmployeeId = getActiveEmployeeNumber(req);
   if (!selectedEmployeeId) {
     // For self-evaluations, selectedEmployeeId is almost always required.
-    console.warn('X-Selected-Employee-ID header not found for self-evaluations API. This is critical.');
+    console.warn('X-Selected-Employee-ID header or employeeNumber cookie not found for self-evaluations API.');
     return null;
   }
-  console.log(`Retrieved selectedEmployeeId: ${selectedEmployeeId} from header for self-evaluations API.`);
   return selectedEmployeeId;
 }
 
