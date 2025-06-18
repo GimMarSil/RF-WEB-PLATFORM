@@ -18,7 +18,7 @@ const tokens = {
 };
 
 const output = path.join(__dirname, '..', 'tokens.json');
-fs.writeFileSync(output, JSON.stringify(tokens, null, 2));
+fs.writeFileSync(output, JSON.stringify(tokens, null, 2) + '\n');
 
 const figma = { color: {}, spacing: {} };
 for (const [name, value] of Object.entries(tokens.colors)) {
@@ -29,7 +29,7 @@ for (const [name, value] of Object.entries(tokens.spacing)) {
 }
 
 const outputFigma = path.join(__dirname, '..', 'tokens-figma.json');
-fs.writeFileSync(outputFigma, JSON.stringify(figma, null, 2));
+fs.writeFileSync(outputFigma, JSON.stringify(figma, null, 2) + '\n');
 
 console.log(`Tokens gravados em ${output}`);
 console.log(`Tokens Figma gravados em ${outputFigma}`);
