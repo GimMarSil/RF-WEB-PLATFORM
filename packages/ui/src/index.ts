@@ -19,3 +19,4 @@ export * from './components/app-card';
 export * from './components/modal';
 export * from './components/theme-provider';
 export * from './components/theme-toggle';
+export * from './components/tooltip';
