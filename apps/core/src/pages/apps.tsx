@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppCard } from '@RFWebApp/ui';
+import { AppCard, Layout } from '@RFWebApp/ui';
 import {
   Car,
   Boxes,
@@ -10,6 +10,16 @@ import {
   Users
 } from 'lucide-react';
 import { useRequireAuth } from '@rfwebapp/lib/useRequireAuth';
+
+const sidebar = (
+  <nav className="p-4 space-y-2">
+    <a href="/" className="block">
+      Home
+    </a>
+  </nav>
+);
+
+const header = <div className="font-semibold">Apps</div>;
 
 export default function AppsPage() {
   const employee = useRequireAuth();
@@ -66,13 +76,15 @@ export default function AppsPage() {
   ];
 
   return (
-    <main className="p-4 space-y-4" role="main">
-      <h2 className="text-xl font-semibold">Escolha uma aplicação</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {apps.map((app) => (
-          <AppCard key={app.href} {...app} />
-        ))}
+    <Layout sidebar={sidebar} header={header}>
+      <div className="space-y-4" role="main">
+        <h2 className="text-xl font-semibold">Escolha uma aplicação</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {apps.map((app) => (
+            <AppCard key={app.href} {...app} />
+          ))}
+        </div>
       </div>
-    </main>
+    </Layout>
   );
 }
