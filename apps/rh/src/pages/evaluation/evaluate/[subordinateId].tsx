@@ -32,6 +32,14 @@ interface SubordinateEvaluationData {
   matrix: EvaluationMatrix;
   status: string; // e.g., 'draft', 'self_evaluation_pending', 'manager_review', 'completed'
   // ... other relevant fields like period, overall comments etc.
+  manager_overall_comments?: string;
+}
+
+interface CriterionFormState {
+  self_achievement_percentage: number | '';
+  self_comments: string;
+  manager_achievement_percentage: number | '';
+  manager_comments: string;
 }
 
 const EvaluationFormPage = () => {
@@ -47,6 +55,8 @@ const EvaluationFormPage = () => {
   const [evaluationData, setEvaluationData] = useState<SubordinateEvaluationData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [criteriaInputs, setCriteriaInputs] = useState<Record<string, CriterionFormState>>({});
+  const [managerOverallComments, setManagerOverallComments] = useState('');
 
   useEffect(() => {
     if (!subordinateId || !managerEmployeeId || inProgress !== InteractionStatus.None || !accounts[0]) {
@@ -98,6 +108,58 @@ const EvaluationFormPage = () => {
 
     fetchEvaluationDetails();
   }, [subordinateId, managerEmployeeId, instance, accounts, inProgress, systemUserId]);
+
+  useEffect(() => {
+    if (evaluationData) {
+      const initial: Record<string, CriterionFormState> = {};
+      evaluationData.matrix.criteria.forEach((c) => {
+        initial[c.id] = {
+          self_achievement_percentage: c.self_achievement_percentage ?? '',
+          self_comments: c.self_comments || '',
+          manager_achievement_percentage: c.manager_achievement_percentage ?? '',
+          manager_comments: c.manager_comments || '',
+        };
+      });
+      setCriteriaInputs(initial);
+      setManagerOverallComments(evaluationData.manager_overall_comments || '');
+    }
+  }, [evaluationData]);
+
+  const handleCriterionChange = (
+    criterionId: string,
+    field: keyof CriterionFormState,
+    value: number | string,
+  ) => {
+    setCriteriaInputs((prev) => ({
+      ...prev,
+      [criterionId]: { ...prev[criterionId], [field]: value },
+    }));
+  };
+
+  const handleSubmitEvaluation = (e: React.FormEvent) => {
+    e.preventDefault();
+    const payload = {
+      managerOverallComments,
+      criteria: Object.entries(criteriaInputs).map(([id, data]) => ({
+        criterionId: id,
+        selfAchievementPercentage: data.self_achievement_percentage,
+        selfComments: data.self_comments,
+        managerAchievementPercentage: data.manager_achievement_percentage,
+        managerComments: data.manager_comments,
+      })),
+    };
+    console.log('Submitting evaluation', payload);
+    // TODO: Send payload to backend
+  };
+
+  const handleSaveDraft = () => {
+    const payload = {
+      managerOverallComments,
+      criteria: criteriaInputs,
+    };
+    console.log('Saving draft', payload);
+    // TODO: Persist draft via API
+  };
 
   if (isLoading || inProgress !== InteractionStatus.None) {
     return (
@@ -154,26 +216,69 @@ const EvaluationFormPage = () => {
         <div className="bg-white shadow-lg rounded-lg p-6 md:p-8">
           <h2 className="text-2xl font-semibold text-gray-800 mb-6">Critérios de Avaliação</h2>
           {/* Form will go here */}
-          <form>
+          <form onSubmit={handleSubmitEvaluation}>
             {evaluationData.matrix.criteria.map((criterion, index) => (
               <div key={criterion.id} className={`mb-6 pb-6 ${index < evaluationData.matrix.criteria.length - 1 ? 'border-b border-gray-200' : ''}`}>
                 <h3 className="text-lg font-semibold text-gray-700">{criterion.name}</h3>
                 <p className="text-sm text-gray-500 mb-1">Peso: {criterion.weight}%</p>
                 {criterion.description && <p className="text-sm text-gray-600 mb-3">{criterion.description}</p>}
                 
-                {/* TODO: Add fields for Self-Evaluation scores/comments (read-only if submitted) */}
-                {/* TODO: Add fields for Manager scores/comments */}
+                <div className="mt-2">
+                  <label htmlFor={`self_score_${criterion.id}`} className="block text-sm font-medium text-gray-700">
+                    Autoavaliação (% Realização):
+                  </label>
+                  <input
+                    type="number"
+                    id={`self_score_${criterion.id}`}
+                    name={`self_score_${criterion.id}`}
+                    min="0"
+                    max="100"
+                    value={criteriaInputs[criterion.id]?.self_achievement_percentage}
+                    onChange={(e) =>
+                      handleCriterionChange(
+                        criterion.id,
+                        'self_achievement_percentage',
+                        e.target.value === '' ? '' : Number(e.target.value)
+                      )
+                    }
+                    className="mt-1 block w-full sm:w-1/2 md:w-1/3 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    placeholder="0-100"
+                  />
+                </div>
+                <div className="mt-2">
+                  <label htmlFor={`self_comments_${criterion.id}`} className="block text-sm font-medium text-gray-700">
+                    Comentários do Colaborador:
+                  </label>
+                  <textarea
+                    id={`self_comments_${criterion.id}`}
+                    name={`self_comments_${criterion.id}`}
+                    rows={3}
+                    value={criteriaInputs[criterion.id]?.self_comments}
+                    onChange={(e) =>
+                      handleCriterionChange(criterion.id, 'self_comments', e.target.value)
+                    }
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    placeholder="Comentários do colaborador..."
+                  />
+                </div>
                 <div className="mt-2">
                   <label htmlFor={`manager_score_${criterion.id}`} className="block text-sm font-medium text-gray-700">
                     Pontuação do Gestor (% Realização):
                   </label>
-                  <input 
+                  <input
                     type="number"
                     id={`manager_score_${criterion.id}`}
                     name={`manager_score_${criterion.id}`}
                     min="0"
                     max="100"
-                    // value={...} onChange={...} 
+                    value={criteriaInputs[criterion.id]?.manager_achievement_percentage}
+                    onChange={(e) =>
+                      handleCriterionChange(
+                        criterion.id,
+                        'manager_achievement_percentage',
+                        e.target.value === '' ? '' : Number(e.target.value)
+                      )
+                    }
                     className="mt-1 block w-full sm:w-1/2 md:w-1/3 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     placeholder="0-100"
                   />
@@ -182,11 +287,14 @@ const EvaluationFormPage = () => {
                   <label htmlFor={`manager_comments_${criterion.id}`} className="block text-sm font-medium text-gray-700">
                     Observações do Gestor:
                   </label>
-                  <textarea 
+                  <textarea
                     id={`manager_comments_${criterion.id}`}
                     name={`manager_comments_${criterion.id}`}
                     rows={3}
-                    // value={...} onChange={...}
+                    value={criteriaInputs[criterion.id]?.manager_comments}
+                    onChange={(e) =>
+                      handleCriterionChange(criterion.id, 'manager_comments', e.target.value)
+                    }
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     placeholder="Comentários sobre o desempenho neste critério..."
                   />
@@ -196,10 +304,12 @@ const EvaluationFormPage = () => {
 
             <div className="mt-8 pt-6 border-t border-gray-300">
               <h3 className="text-lg font-semibold text-gray-700 mb-2">Comentários Gerais do Gestor</h3>
-              <textarea 
+              <textarea
                 id="manager_overall_comments"
                 name="manager_overall_comments"
                 rows={4}
+                value={managerOverallComments}
+                onChange={(e) => setManagerOverallComments(e.target.value)}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 placeholder="Feedback geral sobre o período de avaliação..."
               />
@@ -207,15 +317,14 @@ const EvaluationFormPage = () => {
 
             <div className="mt-8 flex justify-end space-x-3">
               <button 
-                type="button" 
-                // onClick={handleSaveDraft}
+                type="button"
+                onClick={handleSaveDraft}
                 className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 Salvar Rascunho
               </button>
               <button 
-                type="submit" 
-                // onClick={handleSubmitEvaluation}
+                type="submit"
                 className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 Submeter Avaliação
