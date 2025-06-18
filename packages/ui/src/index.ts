@@ -19,4 +19,8 @@ export * from './components/app-card';
 export * from './components/modal';
 export * from './components/theme-provider';
 export * from './components/theme-toggle';
+<<<<<<< codex/create-tooltip-component-in-ui-package
+export * from './components/tooltip';
+=======
 export * from './components/layout';
+>>>>>>> main

@@ -66,8 +66,14 @@ Biblioteca central de componentes estilizados com Tailwind CSS, GSAP e design Ra
 Como usar na tua app:
 
 ```tsx
-import { Button } from '@RFWebApp/ui';
-<Button variant="primary">Salvar</Button>;
+import { Button, Tooltip, TooltipTrigger, TooltipContent } from '@RFWebApp/ui';
+
+<Tooltip>
+  <TooltipTrigger asChild>
+    <Button variant="primary">Salvar</Button>
+  </TooltipTrigger>
+  <TooltipContent>Dica de botão</TooltipContent>
+</Tooltip>
 ```
 
 Tailwind com preset da UI:
