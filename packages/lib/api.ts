@@ -1,10 +1,11 @@
-import { msalInstance } from './auth/msal';
+import { getAuthClient } from './auth';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
 
 export async function fetchApi<T>(
   url: string,
   options: RequestInit = {}
 ): Promise<T> {
+  const msalInstance = getAuthClient();
   const account = msalInstance.getActiveAccount();
   const scopes = [process.env.NEXT_PUBLIC_API_SCOPES || ''];
   const request = { account, scopes };

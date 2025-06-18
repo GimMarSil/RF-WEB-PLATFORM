@@ -163,6 +163,7 @@ SELECT Number, Name FROM Employee WHERE UserId = @upn AND Active = 1
 - clsx – gestão de classes condicionais
 - Zustand – estado global (funcionário ativo)
 - MSAL – autenticação Microsoft 365
+- Abstração de autenticação selecionável via `NEXT_PUBLIC_AUTH_PROVIDER`
 - SQL Server – verificação de associação a funcionário
 
 🛠️ Desenvolvimento
@@ -207,4 +208,4 @@ useAnalytics('core');
 - [ ] Criar layout base com Navbar lateral e topbar
 - [ ] Criar design tokens exportáveis para Figma
 - [ ] Publicar `@RFWebApp/ui` em NPM privado (GitHub Packages)
-- [ ] Criar fallback de autenticação para outros provedores (ex: Azure B2B)
+- [x] Suporte a múltiplos provedores de autenticação (Azure B2B, etc.)
