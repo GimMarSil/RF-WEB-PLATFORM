@@ -8,9 +8,9 @@
  *************************************************************/
 
 // Load environment variables from .env.local
-require('@rfwebapp/lib/loadEnv.js');
-const sql = require('mssql');
-const { Client } = require('pg');
+import '@rfwebapp/lib/loadEnv.js';
+import sql from 'mssql';
+import { Client } from 'pg';
 
 // Configuração SQL Server
 const sqlConfig = {
@@ -20,7 +20,7 @@ const sqlConfig = {
   database: process.env.SQL_DATABASE,
   options: {
     encrypt: true,
-    trustServerCertificate: true,
+    trustServerCertificate: true
   },
   pool: {
     max: 10,
@@ -36,11 +36,19 @@ const pgClient = new Client({
 
 // Validar configuração
 function validateConfig() {
-  const required = ['SQL_USER', 'SQL_PASSWORD', 'SQL_SERVER', 'SQL_DATABASE', 'DATABASE_URL'];
-  const missing = required.filter(key => !process.env[key]);
-  
+  const required = [
+    'SQL_USER',
+    'SQL_PASSWORD',
+    'SQL_SERVER',
+    'SQL_DATABASE',
+    'DATABASE_URL'
+  ];
+  const missing = required.filter((key) => !process.env[key]);
+
   if (missing.length > 0) {
-    throw new Error(`Missing required environment variables: ${missing.join(', ')}`);
+    throw new Error(
+      `Missing required environment variables: ${missing.join(', ')}`
+    );
   }
 
   console.log('Environment variables loaded:', {
@@ -132,11 +140,17 @@ async function main() {
     } else {
       // 5. Se a tabela existir, verificar se precisa de alterações
       console.log('Table exists. Checking if migration is needed...');
-      const hasEmployeeNumber = tableInfo.rows.some(col => col.column_name === 'employee_number');
-      const hasNumber = tableInfo.rows.some(col => col.column_name === 'number');
+      const hasEmployeeNumber = tableInfo.rows.some(
+        (col) => col.column_name === 'employee_number'
+      );
+      const hasNumber = tableInfo.rows.some(
+        (col) => col.column_name === 'number'
+      );
 
       if (hasNumber && !hasEmployeeNumber) {
-        console.log('Migrating column name from "number" to "employee_number"...');
+        console.log(
+          'Migrating column name from "number" to "employee_number"...'
+        );
         await pgClient.query(`
           ALTER TABLE employees 
           RENAME COLUMN number TO employee_number;
@@ -151,7 +165,8 @@ async function main() {
 
     for (const emp of employees) {
       try {
-        await pgClient.query(`
+        await pgClient.query(
+          `
           INSERT INTO employees (
             employee_number, email, name, active, company_name, user_id, department, admission_date, sync_status, current, termination_date, created_at, created_by, updated_at, updated_by, identity_card, last_sync, passport_number, salary_rule, schedule_id
           ) VALUES (
@@ -177,28 +192,30 @@ async function main() {
             passport_number = EXCLUDED.passport_number,
             salary_rule = EXCLUDED.salary_rule,
             schedule_id = EXCLUDED.schedule_id
-        `, [
-          emp.Number,
-          emp.Email,
-          emp.Name,
-          emp.Active,
-          emp.CompanyName,
-          emp.UserId,
-          emp.Department,
-          emp.AdmissionDate,
-          emp.SyncStatus,
-          emp.Current,
-          emp.TerminationDate,
-          emp.CreatedAt,
-          emp.CreatedBy,
-          emp.UpdatedAt,
-          emp.UpdatedBy,
-          emp.IdentityCard,
-          emp.LastSync,
-          emp.PassportNumber,
-          emp.SalaryRule,
-          emp.ScheduleId
-        ]);
+        `,
+          [
+            emp.Number,
+            emp.Email,
+            emp.Name,
+            emp.Active,
+            emp.CompanyName,
+            emp.UserId,
+            emp.Department,
+            emp.AdmissionDate,
+            emp.SyncStatus,
+            emp.Current,
+            emp.TerminationDate,
+            emp.CreatedAt,
+            emp.CreatedBy,
+            emp.UpdatedAt,
+            emp.UpdatedBy,
+            emp.IdentityCard,
+            emp.LastSync,
+            emp.PassportNumber,
+            emp.SalaryRule,
+            emp.ScheduleId
+          ]
+        );
         successCount++;
       } catch (err) {
         console.error(`Error syncing employee ${emp.Number}:`, err);
@@ -209,7 +226,6 @@ async function main() {
     console.log('Sync completed!');
     console.log(`Successfully synced: ${successCount} employees`);
     console.log(`Failed to sync: ${errorCount} employees`);
-
   } catch (err) {
     console.error('Error during sync:', err);
     process.exit(1);
@@ -220,3 +236,4 @@ async function main() {
 }
 
 main();
+export {};

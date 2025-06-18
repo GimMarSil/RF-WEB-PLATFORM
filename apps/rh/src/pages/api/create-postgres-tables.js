@@ -1,6 +1,6 @@
 // Load environment variables from .env.local
-require('@rfwebapp/lib/loadEnv.js');
-const { Client } = require('pg');
+import '@rfwebapp/lib/loadEnv.js';
+import { Client } from 'pg';
 
 // Configuração Postgres (Railway)
 const pgClient = new Client({
@@ -202,7 +202,6 @@ async function main() {
     `);
 
     console.log('All tables created successfully!');
-
   } catch (err) {
     console.error('Error creating tables:', err);
     process.exit(1);
@@ -211,4 +210,5 @@ async function main() {
   }
 }
 
-main(); 
+main();
+export {};
