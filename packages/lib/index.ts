@@ -4,4 +4,5 @@ export * from './useFuncionarioAtivo';
 export * from './useRequireAuth';
 export * from './api';
 export * from './analytics';
-export * from './store'; 
+export * from './store';
+export * from './auth';
