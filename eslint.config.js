@@ -5,7 +5,7 @@ import reactPlugin from 'eslint-plugin-react';
 export default [
   {
     files: ['**/*.{js,ts,tsx}'],
-    ignores: ['**/node_modules/**', '**/dist/**', '**/build/**'],
+    ignores: ['**/node_modules/**', '**/dist/**', '**/build/**', '**/.next/**'],
     languageOptions: {
       parser: parserTs,
       parserOptions: {
@@ -20,9 +20,16 @@ export default [
       '@typescript-eslint': eslintPluginTs,
       react: reactPlugin
     },
+    settings: {
+      react: {
+        version: 'detect'
+      }
+    },
     rules: {
       ...reactPlugin.configs.recommended.rules,
-      ...eslintPluginTs.configs.recommended.rules
+      ...eslintPluginTs.configs.recommended.rules,
+      'react/prop-types': 'off',
+      'react/react-in-jsx-scope': 'off'
     }
   }
 ];

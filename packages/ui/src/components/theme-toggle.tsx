@@ -1,9 +1,9 @@
 import React from 'react';
-import { usePrefs } from './theme-provider';
+import { usePrefs, type Theme } from './theme-provider';
 
 export function ThemeToggle() {
   const { theme, setTheme } = usePrefs();
-  const themes: Record<string, string> = {
+  const themes: Record<Theme, Theme> = {
     light: 'dark',
     dark: 'high-contrast',
     'high-contrast': 'light'
@@ -11,7 +11,7 @@ export function ThemeToggle() {
   const next = themes[theme];
   return (
     <button
-      onClick={() => setTheme(next as any)}
+      onClick={() => setTheme(next)}
       aria-label="Toggle theme"
       className="p-2 border rounded"
     >
