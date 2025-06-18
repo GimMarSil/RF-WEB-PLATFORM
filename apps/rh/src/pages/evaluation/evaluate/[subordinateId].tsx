@@ -71,14 +71,8 @@ const EvaluationFormPage = () => {
 
       try {
         console.log(`Fetching evaluation data for subordinate: ${subordinateId}, by manager: ${managerEmployeeId}`);
-        // TODO: Replace with actual API endpoint and data structure
-        // This endpoint would need to:
-        // 1. Find or initiate an employee_evaluation for the subordinateId, managerEmployeeId, and current period/matrix.
-        // 2. Fetch the relevant evaluation_matrix and its criteria.
-        // 3. Fetch any existing self_evaluation scores and manager_evaluation scores.
-        // 4. Get subordinate's name/details.
         const fetchedData = await fetchWithAuth<SubordinateEvaluationData>(
-          `/api/evaluation/form-data/${subordinateId}`, // Placeholder API endpoint
+          `/api/evaluation/form-data/${subordinateId}`,
           { method: 'GET' }, // Potentially POST if it needs to initiate an evaluation record
           apiClientOptions
         );
