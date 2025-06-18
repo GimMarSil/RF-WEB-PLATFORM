@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import {
@@ -13,19 +13,69 @@ import {
   IdentificationIcon, // for Minhas Avaliações button
 } from '@heroicons/react/24/outline';
 
-// Placeholder data for summary cards - replace with actual data fetching later
-const summaryData = {
-  pendingReviews: 1,
-  completedReviews: 2,
-  pendingBalances: 2,
-};
+import { useSelectedEmployee } from '@/contexts/SelectedEmployeeContext';
+import { InteractionStatus } from '@azure/msal-browser';
+import { fetchWithAuth } from '@/lib/apiClient';
+
+interface SummaryData {
+  pendingReviews: number;
+  completedReviews: number;
+  pendingBalances: number;
+}
 
 const EvaluationDashboardPage = () => {
+  const { msalInstance, accounts, inProgress, selectedEmployeeId, isManagerRole, setIsManagerRole } = useSelectedEmployee();
+  const activeAccount = accounts && accounts.length > 0 ? accounts[0] : null;
+
   const [activeTab, setActiveTab] = useState<'gestor' | 'colaborador'>('gestor');
+  const [summaryData, setSummaryData] = useState<SummaryData>({
+    pendingReviews: 0,
+    completedReviews: 0,
+    pendingBalances: 0,
+  });
 
-  // TODO: Fetch actual data based on user role (manager/employee) and their ID
-  // For now, using placeholder data and simple role switching.
+  useEffect(() => {
+    const fetchRole = async () => {
+      if (!msalInstance || !activeAccount || inProgress !== InteractionStatus.None) return;
+      try {
+        const data = await fetchWithAuth<{ isManager: boolean; employeeId?: string }>(
+          '/api/evaluation/user-role-info',
+          { method: 'GET' },
+          { msalInstance, interactionStatus: inProgress, activeAccount, selectedEmployeeId: null }
+        );
+        setIsManagerRole(data.isManager);
+        if (data.isManager) setActiveTab('gestor');
+        else setActiveTab('colaborador');
+      } catch (err) {
+        console.error('Failed to fetch user role info:', err);
+      }
+    };
+    fetchRole();
+  }, [msalInstance, activeAccount, inProgress, setIsManagerRole]);
 
+  useEffect(() => {
+    const fetchSummary = async () => {
+      if (!msalInstance || !activeAccount || inProgress !== InteractionStatus.None) return;
+      try {
+        const apiOptions = { msalInstance, interactionStatus: inProgress, activeAccount, selectedEmployeeId };
+        if (isManagerRole) {
+          const notifications = await fetchWithAuth<any[]>('/api/evaluation/notifications', { method: 'GET' }, apiOptions);
+          const pendingReviews = notifications.filter(n => n.type === 'evaluation_pending' && n.status === 'pending').length;
+          const pendingBalances = notifications.filter(n => n.type === 'self_evaluation_due' && n.status === 'pending').length;
+          const completedReviews = notifications.filter(n => n.type === 'evaluation_due' && n.status === 'pending').length;
+          setSummaryData({ pendingReviews, completedReviews, pendingBalances });
+        } else {
+          const evals = await fetchWithAuth<any[]>('/api/evaluation/evaluations', { method: 'GET' }, apiOptions);
+          const pendingReviews = evals.filter(e => e.status !== 'completed').length;
+          const completedReviews = evals.filter(e => e.status === 'completed').length;
+          setSummaryData({ pendingReviews, completedReviews, pendingBalances: 0 });
+        }
+      } catch (err) {
+        console.error('Failed to fetch summary info:', err);
+      }
+    };
+    fetchSummary();
+  }, [msalInstance, activeAccount, inProgress, isManagerRole, selectedEmployeeId]);
   return (
     <>
       <Head>
